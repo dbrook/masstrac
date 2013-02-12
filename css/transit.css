@@ -1,0 +1,158 @@
+/* 
+ * Filename: /~dbrook/css/transit.css
+ * Programmer: Dan Brook, UMass Lowell Student (daniel_brook@student.uml.edu)
+ *
+ * This style sheet was created for the course 91.462 - GUI Programming 1
+ * 
+ * Page updated by Daniel Brook on 2012-11-28 at 2:00 PM
+ *
+ * Description:
+ * This style sheet will instruct the browser how to layout the arrivals page.
+ */
+
+/*
+ * Bring in some custom / embedded fonts
+ */
+@font-face {
+  font-family: Ericssonga628;
+  src: url(ericssonga628.TTF);
+}
+
+/* WINDOW-WIDE CONFIGURATION
+ * Background image comes from:
+ * 
+ * The page should stretch ALL the way to the browser's borders to make it
+ * feel more like a real application. There will be plenty of stuff that will
+ * be brought in from the edges, so fear not!
+ */
+body {
+  /* Background image from subtlepatterns.com */
+  background-image:url('../img/brushed_alu_dark.png');
+  background-position:center;
+  padding: 0;
+  margin: 0;
+}
+ 
+/*
+ * Make a little navigation bar below the main title. I was tooling around 
+ * the HTML5 site and found a link here: http://www.sfhtml5.org/, which I liked
+ * the overall look of (specifically the menu) so I've attempted to recreate it.
+ */
+#mainbar {
+  background: #eddbaa;
+  margin: 0 0 0 0;
+  padding: 5px 5px 0 0;
+  
+  /* In leiu of a bottom border, a shadow is preferred */
+  box-shadow: 0px 4px 6px black;
+}
+
+/*
+ * Make the cells very compact. Don't even want this to LOOK like a table.
+ * In fact... screw it. The table is a terrible idea, so EVENTUALLY make 
+ * the whole mainbar into a series of DIVs probably.
+ */
+#mainbar table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+/*
+ * To make the entire cell into a link, actually have to put the padding
+ * around the "a" itself and use the display: block option (see below)
+ *
+ * So instead here, we'll just style the border of the table cells
+ */
+#mainbar td {
+/*  border-left: 1px black solid;
+  border-right: 1px black solid;
+  */
+  padding: 0px 0px;
+}
+
+/* Make the ENTIRE cell into a link.
+ * Source: http://answers.google.com/answers/threadview?id=428579
+ */
+#mainbar a {
+  text-decoration: none;
+  color: #3c3c3c;
+  display: block;
+  padding: 5px 10px;
+}
+
+/* 
+ * Custom table region configuration
+ * Will make the table held in a raised border area and individual cells
+ * with smaller borders. Additionally, the first rows/columns will use a sort
+ * of inverted color scheme to differentiate them.
+ * Due to the high risk of exceeding the DIV boundaries I'll provide scrollbars.
+ */
+.tableRegion {
+  margin: 20px;
+  border: black solid 1px;
+  overflow: auto;
+  background-color: whitesmoke;
+}
+
+.tableRegion h2 {
+  line-height: 1em;
+}
+
+.tableRegion table {
+  border: deepskyblue 3px outset;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: Courier, monospace;
+  background-color: white;
+  border-spacing: 1px;
+}
+
+.tableRegion td {
+  border: green 1px solid;
+  padding: 0 2px;
+  min-width: 2em;
+  text-align: center;
+}
+
+/* Color the field as invalid */
+.tableRegion td.invalid {
+  background-color: #fd948d;
+  border-color: red;        /* ONLY change border color, no other params */
+}
+
+/* Color a zero-result field in a special way */
+.tableRegion td.zero {
+  background-color: #83ff6f;
+}
+
+/* 
+ * Format the first rows and columns differently and center the text to 
+ * distinguish them from the rest of the table.
+ * 
+ * The "nth-child" is seriously 1-indexed?
+ */
+/*
+.tableRegion td:nth-child(1) {
+  text-align: center;
+  border: blue;
+  background: blue;
+  color: white;
+}
+*/
+
+/* Do ALL OF the TDs in the FIRST row */
+.tableRegion tr:nth-child(1) td {
+  text-align: center;
+  border: blue;
+  background: blue;
+  color: white;
+}
+
+p {
+  margin : 10px;
+}
+
+table.fakeDisplay {
+  font-family: Ericssonga628;
+  font-size: 26px;
+}

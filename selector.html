@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!--
+      File: /~dbrook/temp/selector.html
+      Daniel Brook, UMass Lowell student, daniel_brook@student.uml.edu
+      This page was created for the course 91.462 - GUI Programming 2
+      
+      Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
+      be used for any purpose so long as credit to the author is given.
+      
+      Description:
+        This is a test launch page so we can throw whatever station/line 
+        combination at the datagetter.js we want and load it into the
+        station.html page for a test of the rendering.
+    -->
+
+    <title>MBTA Transit Tracker Hub</title>
+
+    <!-- This CSS file is important for laying out the page -->
+    <!--<link rel="stylesheet" type="text/css" href="css/transit.css">-->
+    
+    <!-- Pull in the color parameters -->
+    <link rel="stylesheet" type="text/css" href="css/mbta_colors.css">
+    
+    <!-- 
+         Grab the JavaScript needed to make the page run
+         WARNING: It's VERY VERY important that this be done in the
+         order detailed below, as the namespace especially is setup in
+         the structures.js.
+      -->
+    
+    <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="lib/structures.js" type="text/javascript"></script>
+    <script src="lib/stations.js" type="text/javascript"></script>
+    <script src="lib/green.js" type="text/javascript"></script>
+    
+    <!-- Don't need the data retrieval capabilities here
+    <script src="lib/datagetter.js" type="text/javascript"></script>
+    -->
+    
+    <!-- Light front-end processing will be done here, but eventually moved outside -->
+    <!-- Try listing a specific arrival -->
+    <script type="text/javascript">
+        function showAllStations() {
+            
+            var allStations = "";
+            
+            for (var c = 0; c < masstrac.stations.length; c++) {
+                allStations += masstrac.stations[c].name + " [";
+                
+                for (var d = 0; d < masstrac.stations[c].svcs.length; d++) {
+                    allStations += " <a href='station.html?name=" +
+                        masstrac.stations[c].name + "&svc=" + 
+                        masstrac.stations[c].svcs[d] + "'>" +
+                        masstrac.stations[c].svcs[d] + "</a>";
+                }
+                
+                allStations += " ]<br />";
+            }
+            
+            document.getElementById( "stationNames" ).innerHTML = allStations;
+        } // End Function showAllStations
+
+    </script>
+  </head>
+  
+  <!-- 
+       Obviously in the future something more robust than this cheapo on-load
+       will be the preferred method. Since we're using AJAX (which was designed
+       to avoid that type of user experience interruption) this will not be
+       the case ... this is just a testing page, remember.
+    -->
+  <body onload="showAllStations()">
+    <div id="stationNames">
+    </div>
+  </body>
+</html>

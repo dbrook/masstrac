@@ -1,0 +1,31 @@
+/*
+ * Filename: mbta_colors.css
+ * 
+ * Programmer: Daniel Brook, UMass Lowell Student, daniel_brook@student.uml.edu
+ * This stylesheet was created for Course 91.462 - GUI Programming 2
+ * 
+ * These colors were taken from the MBTA, and according to the discussion on
+ * Wikipedia these haven't always been this way, so we're going with the source.
+ * 
+ *       Source: http://mbta.com/lib/css/global.css
+ */
+
+.redLine {
+    background-color: #C80000;
+}
+
+.greenLine {
+    background-color: #11773C;
+}
+
+.orangeLine {
+    background-color: #FE6700;
+}
+
+.blueLine {
+    background-color: #00009C;
+}
+
+.commuterRail {
+    background-color: #B60EA0;
+}

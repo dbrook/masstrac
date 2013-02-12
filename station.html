@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!--
+      File: /~dbrook/temp/index.html
+      Daniel Brook, UMass Lowell student, daniel_brook@student.uml.edu
+      This page was created for the course 91.462 - GUI Programming 2
+      
+      Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
+      be used for any purpose so long as credit to the author is given.
+      
+      Page updated by Daniel Brook on 2013-02-10 at 2:00 PM
+      
+      Description:
+        This is a stupidly quick test page to see how logos / a top bar work
+        together (as well as putting link/button widgets on the top bar).
+        It'll also be a good way to test how the project logo(s) may work out,
+        as well as making the data human-readable and experimenting with it.
+    -->
+
+    <title>MBTA Transit Tracker Hub</title>
+
+    <!-- This CSS file is important for laying out the page -->
+    <link rel="stylesheet" type="text/css" href="css/transit.css">
+    
+    <!-- Pull in the color parameters -->
+    <link rel="stylesheet" type="text/css" href="css/mbta_colors.css">
+    
+    <!-- 
+         Grab the JavaScript needed to make the page run
+         WARNING: It's VERY VERY important that this be done in the
+         order detailed below, as the namespace especially is setup in
+         the structures.js.
+      -->
+    <!-- Prof. Heines' form utilities, for extracting URL parameters -->
+    <script src="lib/jhmformutils.js" type="text/javascript"></script>
+    <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="lib/structures.js" type="text/javascript"></script>
+    <script src="lib/stations.js" type="text/javascript"></script>
+    <script src="lib/green.js" type="text/javascript"></script>
+    <script src="lib/datagetter.js" type="text/javascript"></script>
+    
+    <!-- Light front-end processing will be done here, but eventually moved outside -->
+    <!-- Try listing a specific arrival -->
+    <script type="text/javascript">
+        function testStopLoad( ) {
+            // Clear out the existing array (should really make this a masstrac func
+            // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-javascript/8134354#8134354
+            masstrac.arrivals.splice( 0, masstrac.arrivals.length );
+            
+            // Me being short-sighted when creating the data files lead me to forget
+            // about [space] and %20 in URL parameters. So use the replace to fix!
+            // (THIS IS NOT A PROBLEM WITH SERVICES / LINE NAMES)
+            
+            // SUPER SPECIAL THANKS TO:
+            // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
+            var stop_name = (getParameter( "name" )).split("%20").join(" ");
+            var line_name = getParameter( "svc" );
+        
+            var dest = "Upcoming Arrivals at " + stop_name +
+                       " on the " + line_name.toUpperCase() + 
+                       " line<br />";
+
+            masstrac.getCommuterRail( stop_name, line_name );
+        
+            // Try our new sorting ability!! -- SWEET, it works!
+            masstrac.sortArrivals( "time" );
+
+            if (masstrac.arrivals.length == 0) {
+                dest += "<br />NONE, looks like you're walking!";
+
+            } else {
+                dest += "<table class='tableRegion'>";
+                
+                
+                dest += "<tr><td>Destination</td>" + 
+                        "<td>TripID</td>" +
+                        "<td>Comment</td>" + 
+                        "<td>Mode Flag</td>" + 
+                        "<td>Arriving In</td>" + 
+                        "<td>Arriving At</td>" +
+                        "<td>lat/lon</td></tr>";
+                
+                for (var a = 0; a < masstrac.arrivals.length; a++) {
+                    var hrTime = new Date( masstrac.arrivals[a].UNIXtime * 1000 );
+                    var hrHour = hrTime.getHours();
+                    var hrMinu = hrTime.getMinutes();
+                    var hrDayN = hrTime.getDate();
+                    dest += "<tr><td>"  + masstrac.arrivals[a].Destination +
+                            "</td><td>" + masstrac.arrivals[a].TripID + 
+                            "</td><td>" + masstrac.arrivals[a].Note +
+                            "</td><td>" + masstrac.arrivals[a].Type +
+                            "</td><td>" + Math.ceil(masstrac.arrivals[a].Countdown / 60) +
+                            " min</td><td>Day " + hrDayN + ", " +
+                                    
+                            // Used this trick to jet times to show as expected.
+                            // http://stackoverflow.com/questions/8043026/javascript-format-number-to-have-2-digit
+
+                            ("0" + hrHour).slice(-2) + ":" + ("0" + hrMinu).slice(-2) +
+                            "</td><td>" + masstrac.arrivals[a].lat +
+                            " / " + masstrac.arrivals[a].lon + "</td></tr>";
+                }
+                dest += "</table>";
+            }
+
+            document.getElementById( "stationList" ).innerHTML = dest;
+        } // End Function testStopLoad
+    </script>
+  </head>
+  
+  <!-- 
+       Obviously in the future something more robust than this cheapo on-load
+       will be the preferred method. Since we're using AJAX (which was designed
+       to avoid that type of user experience interruption) this will not be
+       the case ... this is just a testing page, remember.
+    -->
+  <body onload="testStopLoad('Norfolk', 'franklin')">
+    <div id="mainbar">
+      <!-- 
+           Have the following elements for navigation:
+           - Back button
+           - Project logo (working)
+           - Refresh Button
+           - Settings... Button
+           - Button to hide the "mainbar"
+        -->
+      <table>
+        <tr>
+          <td>
+            
+            <!--
+                NOTE: all icons used are courtesy of the Tango Project
+              -->
+            <!-- 
+                 Needed to nudge this image down here because of the shadow
+                 effect making it look too high to the naked eye
+              -->
+          <td><a href="http://weblab.cs.uml.edu/~dbrook/temp/selector.html">
+              <img src="img/go-previous.png" 
+                   width="42" height="42" title="Back"></a></td>
+          
+          <td><a href="http://weblab.cs.uml.edu/~dbrook/temp/selector.html">
+              <img src="img/project_logo.png" width="250" height="48"
+                   title="Back to Boston Transit Hub's Home">
+          </a></td>
+          
+          <td width="100%">A <b>T</b>ool (that displays) <b>R</b>eal-Time <b>A</b>rrival <b>C</b>ountdowns for the MBTA</td>
+
+          <!-- Also need to nudge this down -->
+          <td class="reDataGetter"><a>
+              <img src="img/view-refresh.png" width="42" height="42"
+                   title="Refresh the data">
+          </a></td>
+          <td><a href="http://weblab.cs.uml.edu/~dbrook/">
+              <img src="img/preferences-system.png" width="42" height="42"
+                   title="Configure the Transit Arrival Time Display"
+                   style="position:relative; top:-2px">
+          </a></td>
+<!--
+          <td><a href="http://weblab.cs.uml.edu/~dbrook/">
+              <img src="img/go-top.png" width="42" height="42"
+                   title="Hide this header bar">
+          </a></td>
+-->
+
+        </tr>
+      </table>
+    </div>
+    
+    <br />
+    <p style="color: white">
+      NOTE: This page is testing live data. To prevent overuse of the MBTA servers, the data
+      for any specific line is not updated more than once per minute.
+    </p>
+
+    <!-- Dummy Placeholder for now -->
+    <div id="stationList" style="margin: 10px">
+      <b>Either the data is still loading or you didn't pass parameters.</b>
+    </div>
+    
+    <!-- Legal stuff... make sure this makes it into the final project -->
+    <br />
+    <br />
+    <br />
+    <p>
+      All arrival data is provided by MassDOT and the MBTA. Mass TRAC is in no
+      way affiliated with MassDOT or any of its associated agencies. The 
+      predictions are experimental, and provided 'as-is', without any 
+      guarantee of reliability or performance. Mass TRAC, nor MassDOT are
+      liable for any damages incurred by the use of this data.
+    </p>
+    
+
+    <script>
+        $(".reDataGetter").click( function () {
+            testStopLoad();
+        });
+    </script>
+  </body>
+</html>
