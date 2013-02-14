@@ -1,2 +1,20 @@
 # Put all the temporary file masks we don't want to get "gitted" here.
 *~
+
+# Ignore everything in data/ because those file handles cannot be present
+# or else PHP cannot overwrite them.
+data/blue.json
+data/red.json
+data/orange.json
+data/RailLine_11.json
+data/RailLine_1.json
+data/RailLine_3.json
+data/RailLine_5.json
+data/RailLine_7.json
+data/RailLine_9.json
+data/RailLine_10.json
+data/RailLine_12.json
+data/RailLine_2.json
+data/RailLine_4.json
+data/RailLine_6.json
+data/RailLine_8.json
