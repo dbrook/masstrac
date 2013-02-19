@@ -47,56 +47,32 @@ $freezeTime = 60;
 $siteRequest = $_GET[line];
 
 // First validate Commuter Rail Line Numbers
-if ($siteRequest == "1") {
+if ($siteRequest == "1"  ||
+    $siteRequest == "2"  ||
+    $siteRequest == "3"  ||
+    $siteRequest == "4"  ||
+    $siteRequest == "5"  ||
+    $siteRequest == "6"  ||
+    $siteRequest == "7"  ||
+    $siteRequest == "8"  ||
+    $siteRequest == "9"  ||
+    $siteRequest == "10" ||
+    $siteRequest == "11" ||
+    $siteRequest == "12"   ) {
+  
   $type = "commuter";
   
-} else if ($siteRequest == "2") {
-  $type = "commuter";
+} else if ($siteRequest == "orange" ||
+           $siteRequest == "red"    ||
+           $siteRequest == "blue"     ) {
   
-} else if ($siteRequest == "3") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "4") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "5") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "6") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "7") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "8") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "9") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "10") {
-  $type = "commuter";
-  
-} else if ($siteRequest == "11") {
-  $type = "commuter";
-  
-// Then give the subway a go...
-} else if ($siteRequest == "12") {
-  $type = "commuter";  
-  
-} else if ($siteRequest == "orange") {
   $type = "subway";  
   
-} else if ($siteRequest == "red") {
-  $type = "subway";  
-  
-} else if ($siteRequest == "blue") {
-  $type = "subway";
-  
-// Oh dear, somebody sent something wrong.
+// No valid line was specified. 
+// TODO: Think of a way to return an "error" to the site?
 } else {
-  print "An invalid JSON file was specified. No Action.";
-  exit();
+  header('HTTP', true, 400);
+  return "Invalid line requested";
 }
 
 /*
