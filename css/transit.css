@@ -4,7 +4,7 @@
  *
  * This style sheet was created for the course 91.462 - GUI Programming 1
  * 
- * Page updated by Daniel Brook on 2012-11-28 at 2:00 PM
+ * Page updated by Daniel Brook on 2013-02-18 at 6:00 PM
  *
  * Description:
  * This style sheet will instruct the browser how to layout the arrivals page.
@@ -28,7 +28,6 @@
 body {
   /* Background image from subtlepatterns.com */
   background-image:url('../img/brushed_alu_dark.png');
-  background-position:center;
   padding: 0;
   margin: 0;
 }
@@ -39,7 +38,8 @@ body {
  * the overall look of (specifically the menu) so I've attempted to recreate it.
  */
 #mainbar {
-  background: #eddbaa;
+/*  background: #eddbaa;*/
+  background: #cccccc;
   margin: 0 0 0 0;
   padding: 5px 5px 0 0;
   
@@ -125,21 +125,6 @@ body {
   background-color: #83ff6f;
 }
 
-/* 
- * Format the first rows and columns differently and center the text to 
- * distinguish them from the rest of the table.
- * 
- * The "nth-child" is seriously 1-indexed?
- */
-/*
-.tableRegion td:nth-child(1) {
-  text-align: center;
-  border: blue;
-  background: blue;
-  color: white;
-}
-*/
-
 /* Do ALL OF the TDs in the FIRST row */
 .tableRegion tr:nth-child(1) td {
   text-align: center;
@@ -155,4 +140,117 @@ p {
 table.fakeDisplay {
   font-family: Ericssonga628;
   font-size: 26px;
+}
+
+#arrivals {
+    margin : 25px;
+}
+
+h2 {
+    font-size : 3em;
+    color : white;
+    font-family : Tahoma, Arial, sans-serif;
+}
+
+#lightrail {
+    margin : 25px;
+}
+
+.tableShell {
+    display : table;
+    border-spacing : 0 5px;
+    font-family : Tahoma, Arial, sans-serif;
+    font-size : 1em;
+}
+
+.tableShell .trip {
+    display : table-row;
+}
+
+.tableShell .trip .route {
+    vertical-align : middle;
+    text-align : center;
+    display : table-cell;
+    border-top : solid black 3px;
+    border-left : solid black 3px;
+    border-bottom : solid black 3px;
+    font-weight : bold;
+    font-size : 2.5em;
+    color : white;
+    width : 3em;            /* Should give plenty of room for abbrevs */
+    border-radius : 10px 0 0 10px;
+}
+
+.tableShell .trip .destInfo {
+    background-color : black;
+
+    /* Trying a gradient courtesy of the nifty designer here:
+       http://www.colorzilla.com/gradient-editor/             */
+    background: -moz-linear-gradient(left, rgba(0,0,0,1) 30%, rgba(34,34,34,1) 100%); /* FF3.6+ */
+    border-top : solid black 3px;
+    border-bottom : solid black 3px;
+    color : white;
+    display : table-cell;
+    font-size : 1.5em;
+    width : 15em;
+    vertical-align : middle;
+    padding : 10px 20px;
+}
+
+.tableShell .trip .destInfo .destination {
+    font-weight : bold;
+}
+
+.tableShell .trip .destInfo .tripInfo {
+/*    font-weight : bold;*/
+    font-size : .7em;
+}
+
+.tableShell .trip .countdown {
+    font-size : 1.5em;
+    background-color : #222222;
+    color : white;
+    display : table-cell;
+    border-top : solid black 3px;
+    border-right : solid black 3px;
+    border-bottom : solid black 3px;
+    vertical-align : middle;
+    text-align : right;
+    border-radius : 0 10px 10px 0;
+    padding : 10px 20px;
+    width : 5em;
+}
+
+.tableShell .trip .countdown .note {
+    font-size : 0.8em;
+}
+
+/*
+ * In case the scheduledTime class is added at the same level as
+ * the countdown div, format the whole thing w/ a diff. theme.
+ */
+.tableShell .trip .countdown.scheduled {
+    background-color : #dddddd;
+    color : black;
+}
+
+.tableShell .trip .countdown.approaching {
+    background-color : #00ffff;
+    color : black;
+    text-align : center;
+    font-weight : bold;
+}
+
+.tableShell .trip .countdown.arriving {
+    background-color : #00ff00;
+    color : black;
+    text-align : center;
+    font-weight : bold;
+}
+
+.tableShell .trip .countdown.departing {
+    background-color : #ff0000;
+    color : black;
+    text-align : center;
+    font-weight : bold;
 }

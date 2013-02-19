@@ -48,15 +48,14 @@
             var allStations = "";
             
             for (var c = 0; c < masstrac.stations.length; c++) {
-                allStations += masstrac.stations[c].name + " [";
                 
-                for (var d = 0; d < masstrac.stations[c].svcs.length; d++) {
-                    allStations += " <a href='station.html?name=" +
-                        masstrac.stations[c].name + "&svc=" + 
-                        masstrac.stations[c].svcs[d] + "'>" +
-                        masstrac.stations[c].svcs[d] + "</a>";
-                }
+                allStations += masstrac.stations[c].name +
+                               " [<a href='station.html?name=" + 
+                               masstrac.stations[c].name + "'>all</a> -- ";
                 
+                for (var d = 0; d < masstrac.stations[c].svcs.length; d++)
+                    allStations += masstrac.stations[c].svcs[d] + " ";
+
                 allStations += " ]<br />";
             }
             

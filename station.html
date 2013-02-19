@@ -19,7 +19,7 @@
         as well as making the data human-readable and experimenting with it.
     -->
 
-    <title>MBTA Transit Tracker Hub</title>
+    <title>Mass TRAC, MBTA Arrival Countdown Display</title>
 
     <!-- This CSS file is important for laying out the page -->
     <link rel="stylesheet" type="text/css" href="css/transit.css">
@@ -45,9 +45,9 @@
     <!-- Try listing a specific arrival -->
     <script type="text/javascript">
         function testStopLoad( ) {
-            // Clear out the existing array (should really make this a masstrac func
-            // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-javascript/8134354#8134354
-            masstrac.arrivals.splice( 0, masstrac.arrivals.length );
+            
+            // Before getting new data (and to avoid repeats) dump the old arrival data
+            masstrac.dumpData();
             
             // Me being short-sighted when creating the data files lead me to forget
             // about [space] and %20 in URL parameters. So use the replace to fix!
@@ -56,24 +56,43 @@
             // SUPER SPECIAL THANKS TO:
             // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
             var stop_name = (getParameter( "name" )).split("%20").join(" ");
-            var line_name = getParameter( "svc" );
-        
-            var dest = "Upcoming Arrivals at " + stop_name +
-                       " on the " + line_name.toUpperCase() + 
-                       " line<br />";
-
-            masstrac.getCommuterRail( stop_name, line_name );
+  
+            var dest = "Upcoming Arrivals at " + stop_name;
+            
+            // Arrival content stores into here
+            var arrCont = "<h2>" + stop_name + "</h2>";
+            
+            // Try (for the stations where multiple CR lines stop) to loop through
+            // and call EACH of those CR lines populators to show EVERYTHING!
+            
+            for (var staNum = 0; staNum < masstrac.stations.length; staNum++)
+                if (masstrac.stations[staNum].name == stop_name) break;
+            
+//            alert( "staNum is: " + staNum );
+      
+            for (var numLines = 0;
+                 numLines < masstrac.stations[staNum].svcs.length;
+                 numLines++) {
+            
+                 masstrac.getCommuterRail( stop_name, 
+                                           masstrac.stations[staNum].svcs[numLines] );
+                 masstrac.getSubway( stop_name,
+                                     masstrac.stations[staNum].svcs[numLines] );
+                 
+                 if (masstrac.stations[staNum].svcs[numLines] == "green") {
+                     masstrac.getGreen( stop_name );
+                 }
+            }
         
             // Try our new sorting ability!! -- SWEET, it works!
             masstrac.sortArrivals( "time" );
 
             if (masstrac.arrivals.length == 0) {
-                dest += "<br />NONE, looks like you're walking!";
+                arrCont += "No Predictable Train Arrivals (within ~2 hours)";
+                dest += "No Predictable Arrivals within 2 hours.";
 
             } else {
                 dest += "<table class='tableRegion'>";
-                
-                
                 dest += "<tr><td>Destination</td>" + 
                         "<td>TripID</td>" +
                         "<td>Comment</td>" + 
@@ -81,6 +100,7 @@
                         "<td>Arriving In</td>" + 
                         "<td>Arriving At</td>" +
                         "<td>lat/lon</td></tr>";
+                arrCont += "<div class='tableShell'>";
                 
                 for (var a = 0; a < masstrac.arrivals.length; a++) {
                     var hrTime = new Date( masstrac.arrivals[a].UNIXtime * 1000 );
@@ -91,8 +111,8 @@
                             "</td><td>" + masstrac.arrivals[a].TripID + 
                             "</td><td>" + masstrac.arrivals[a].Note +
                             "</td><td>" + masstrac.arrivals[a].Type +
-                            "</td><td>" + Math.ceil(masstrac.arrivals[a].Countdown / 60) +
-                            " min</td><td>Day " + hrDayN + ", " +
+                            "</td><td>" + masstrac.arrivals[a].Countdown +
+                            " s</td><td>Day " + hrDayN + ", " +
                                     
                             // Used this trick to jet times to show as expected.
                             // http://stackoverflow.com/questions/8043026/javascript-format-number-to-have-2-digit
@@ -100,17 +120,174 @@
                             ("0" + hrHour).slice(-2) + ":" + ("0" + hrMinu).slice(-2) +
                             "</td><td>" + masstrac.arrivals[a].lat +
                             " / " + masstrac.arrivals[a].lon + "</td></tr>";
+                                    
+                    arrCont += "<div class='trip'>";  // The trip contains the row of divs
+                    
+                    // Populate the content (columns) of each row.
+                    // First the route's name, like OR, CR, GR, RD, BL
+                    
+                    arrCont += "<div class='route";
+                    
+                    if (masstrac.arrivals[a].Line == "red")
+                        arrCont += " redLine'>RD</div>"
+                    else if (masstrac.arrivals[a].Line == "orange")
+                        arrCont += " orangeLine'>OR</div>";
+                    else if (masstrac.arrivals[a].Line == "blue")
+                        arrCont += " blueLine'>BL</div>";
+                    else {
+
+                        // Get rid of the ambiguity of Commuter Rail
+                        // Arrivals by matching the two-letter line code
+                        arrCont += " commuterRail'";
+
+                        switch (masstrac.arrivals[a].Line) {
+                        case "greenbush":
+                            arrCont += " title='Greenbush Line'>GB";
+                            break;
+                        case "fitchburg":
+                            arrCont += " title='Fitchburg / South Acton Line'>FB";
+                            break;
+                        case "lowell":
+                            arrCont += " title='Lowell Line'>LO";
+                            break;
+                        case "haverhill":
+                            arrCont += " title='Haverhill / Reading Line'>HA";
+                            break;
+                        case "newb_rock":
+                            arrCont += " title='Newburyport / Rockport Line'>NR";
+                            break;
+                        case "king_plym":
+                            arrCont += " title='Old Colony Line'>OC";
+                            break;
+                        case "middleborough":
+                            arrCont += " title='Old Colony Line'>OC";
+                            break;
+                        case "prov_stough":
+                            arrCont += " title='Providence / Stoughton Line'>PS";
+                            break;
+                        case "franklin":
+                            arrCont += " title='Franklin Line'>FR";
+                            break;
+                        case "fairmount":
+                            arrCont += " title='Fairmount Line'>FA";
+                            break;
+                        case "needham":
+                            arrCont += " title='Needham Line'>NE";
+                            break;
+                        case "worcester":
+                            arrCont += " title='Framingham / Worcester Line'>FW";
+                            break;
+                        default:
+                            arrCont += " title='UNKNOWN TRAIN'>##";
+                            break;
+                        }
+                        arrCont += "</div>";
+                    }
+                    
+                    // Then do the destination and any notes along with it
+                    arrCont += "<div class='destInfo'>" +
+                               "<span class='destination'>" +
+                               masstrac.arrivals[a].Destination + 
+                               "<br /></span>" + "<span class='tripInfo'>" +
+                               masstrac.arrivals[a].Note +
+                               "</span>" + "</div>";
+                    
+                    // Now finally plug in the countdown, color it according to the
+                    // TYPE of arrival the database says that it is. 
+
+                    arrCont += "<div class='countdown";
+                    if (masstrac.arrivals[a].Type == "pre") {
+                                    
+                        arrCont += " predicted'>" +
+                                   Math.round( masstrac.arrivals[a].Countdown / 60 ) +
+                                   " min</div>";
+                                    
+                    } else if (masstrac.arrivals[a].Type == "sch") {
+
+                        // Is the trip 'scheduled' but shold be here? Say 'due',
+                        // otherwise, just print the expected arrival time.
+                        
+                        if (Math.round( masstrac.arrivals[a].Countdown / 60 ) <= 1) {
+                            
+                            arrCont += " scheduled'>Due</div>";
+                            
+                        } else {
+                            arrCont += " scheduled'>" +
+                                       Math.round( masstrac.arrivals[a].Countdown / 60 ) +
+                                       " min</div>";
+                        }
+
+                    } else if (masstrac.arrivals[a].Type == "app" ) {
+                        arrCont += " approaching'>Approach</div>";
+                    } else if (masstrac.arrivals[a].Type == "arr" ) {
+                        arrCont += " arriving'>Arriving</div>";
+                    } else if (masstrac.arrivals[a].Type == "dep" ) {
+                        arrCont += " departing'>Departing</div>";
+                    } else if (masstrac.arrivals[a].Type == "brd" ) {
+                        arrCont += " departing'>Boarding</div>";
+                    } else {
+                        arrCont += " scheduled'>Unknown</div>";
+                    }
+                    
+                    arrCont += "</div>";              // Closes the row of divs
                 }
+                arrCont += "</div>";  // Close the tableShell div
                 dest += "</table>";
             }
-
+            
+            // Now populate the green line headways (if present)
+            var greenText = "<div class='tableShell'>";
+            
+            if (masstrac.greenLine.b !== undefined) {
+                
+                greenText += "<div class='trip'><div class='route greenLine'>B</div><div class='destInfo'>" +
+                             "<span class='destination'>" + masstrac.greenLine.b.West_Term + "<br />" +
+                             masstrac.greenLine.b.East_Term +
+                             "</span></div><div class='countdown scheduled'><span class='note'>Trains Every</span><br />" +
+                             masstrac.greenLine.b.Headway + " min</div></div>";
+            }
+            if (masstrac.greenLine.c !== undefined) {
+                
+                greenText += "<div class='trip'><div class='route greenLine'>C</div><div class='destInfo'>" +
+                             "<span class='destination'>" + masstrac.greenLine.c.West_Term + "<br />" +
+                             masstrac.greenLine.c.East_Term +
+                             "</span></div><div class='countdown scheduled'><span class='note'>Trains Every</span><br />" +
+                             masstrac.greenLine.c.Headway + " min</div></div>";
+            }
+            if (masstrac.greenLine.d !== undefined) {
+                
+                greenText += "<div class='trip'><div class='route greenLine'>D</div><div class='destInfo'>" +
+                             "<span class='destination'>" + masstrac.greenLine.d.West_Term + "<br />" +
+                             masstrac.greenLine.d.East_Term +
+                             "</span></div><div class='countdown scheduled'><span class='note'>Trains Every</span><br />" +
+                             masstrac.greenLine.d.Headway + " min</div></div>";
+            }
+            if (masstrac.greenLine.e !== undefined) {
+                
+                greenText += "<div class='trip'><div class='route greenLine'>E</div><div class='destInfo'>" +
+                             "<span class='destination'>" + masstrac.greenLine.e.West_Term + "<br />" +
+                             masstrac.greenLine.e.East_Term +
+                             "</span></div><div class='countdown scheduled'><span class='note'>Trains Every</span><br />" +
+                             masstrac.greenLine.e.Headway + " min</div></div>";
+            }
+            
+            greenText += "</div>";
+            
             document.getElementById( "stationList" ).innerHTML = dest;
+            document.getElementById( "arrivals" ).innerHTML = arrCont;
+            
+            if (masstrac.greenLine.b !== undefined ||
+                masstrac.greenLine.c !== undefined ||
+                masstrac.greenLine.d !== undefined ||
+                masstrac.greenLine.e !== undefined   )
+                document.getElementById( "lightrail" ).innerHTML = "<h2>Green Line Information</h2>" + greenText;
+            
         } // End Function testStopLoad
     </script>
   </head>
   
   <!-- 
-       Obviously in the future something more robust than this cheapo on-load
+       Obviously in the future something more robust than this on-load
        will be the preferred method. Since we're using AJAX (which was designed
        to avoid that type of user experience interruption) this will not be
        the case ... this is just a testing page, remember.
@@ -140,13 +317,6 @@
               <img src="img/go-previous.png" 
                    width="42" height="42" title="Back"></a></td>
           
-          <td><a href="http://weblab.cs.uml.edu/~dbrook/temp/selector.html">
-              <img src="img/project_logo.png" width="250" height="48"
-                   title="Back to Boston Transit Hub's Home">
-          </a></td>
-          
-          <td width="100%">A <b>T</b>ool (that displays) <b>R</b>eal-Time <b>A</b>rrival <b>C</b>ountdowns for the MBTA</td>
-
           <!-- Also need to nudge this down -->
           <td class="reDataGetter"><a>
               <img src="img/view-refresh.png" width="42" height="42"
@@ -157,6 +327,14 @@
                    title="Configure the Transit Arrival Time Display"
                    style="position:relative; top:-2px">
           </a></td>
+
+          <td><a href="http://weblab.cs.uml.edu/~dbrook/temp/selector.html">
+              <img src="img/project_logo.png" width="250" height="48"
+                   title="Back to Boston Transit Hub's Home">
+          </a></td>
+          
+          <td>Live MBTA Arrival Predictions</td>
+
 <!--
           <td><a href="http://weblab.cs.uml.edu/~dbrook/">
               <img src="img/go-top.png" width="42" height="42"
@@ -168,20 +346,29 @@
       </table>
     </div>
     
-    <br />
-    <p style="color: white">
-      NOTE: This page is testing live data. To prevent overuse of the MBTA servers, the data
-      for any specific line is not updated more than once per minute.
-    </p>
+    <div id="arrivals">
+      WAITING FOR DATA. BE PATIENT.
+    </div>
 
+    <div id="lightrail">
+    </div>
+
+    <p style="color: white">
+      NOTE: This page is testing live data. To prevent overuse of the MBTA servers, 
+      the data for any specific line is not updated more than once per minute.
+    </p>
+    
+    <p>
+      Below is some diagnostic output. It shows what the underlying data 
+      structure holds, but it's not really formatted for public consumption.
+    </p>
+    
     <!-- Dummy Placeholder for now -->
     <div id="stationList" style="margin: 10px">
       <b>Either the data is still loading or you didn't pass parameters.</b>
     </div>
     
     <!-- Legal stuff... make sure this makes it into the final project -->
-    <br />
-    <br />
     <br />
     <p>
       All arrival data is provided by MassDOT and the MBTA. Mass TRAC is in no
