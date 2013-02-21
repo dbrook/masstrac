@@ -3,6 +3,7 @@
 
 # Ignore everything in data/ because those file handles cannot be present
 # or else PHP cannot overwrite them.
+data/alerts.xml
 data/blue.json
 data/red.json
 data/orange.json

@@ -64,21 +64,10 @@ curl_close($curl);
 print "Successfully retrieved new RSS alert data from the MBTA.<br />";
 
 /*
- * Want to save the JSON data to a file (and obliterate the old one)
- *
- * http://stackoverflow.com/questions/1006604/saving-file-using-curl
- * http://php.net/manual/en/function.fopen.php
- * 
- * DEFINITELY not as simple as it sounds. Because the script is kind of running
- * as its own "thing", it needs to be allowed to read/write my own files.
- * http://www.programmingforums.org/thread17968.html
- * 
- * It won't overwrite existing files that I own, but it will make and update 
- * its own copies. So just give rwxrwxrwx (ugh, I know...) for now just to get
- * up and running in the ../data/ directory.
- * 
- * File write / open status checking code from:
- * http://forums.phpfreaks.com/topic/125161-solved-cant-write-to-a-file-on-local-server/
+ * Now that we have a copy of the CURLed source, save 
+ * it to a local file for our server to give to users.
+ * (This logic was taken from the mbtaJSON.php file, which
+ * cites the source of these following statements)
  */
 if (!$cachedCopyPtr = fopen($localCacheCopy, 'w')) {
   echo "Cannot open file ($localCacheCopy)";

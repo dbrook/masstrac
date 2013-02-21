@@ -146,6 +146,10 @@ table.fakeDisplay {
     margin : 25px;
 }
 
+#servicealerts {
+    margin : 25px;
+}
+
 h2 {
     font-size : 3em;
     color : white;

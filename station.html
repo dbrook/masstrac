@@ -49,6 +49,10 @@
             // Before getting new data (and to avoid repeats) dump the old arrival data
             masstrac.dumpData();
             
+            // We don't know if there are any alerts yet, so don't show the
+            // alert triangle icon yet!
+            $("#alertTriangle").hide();
+            
             // Me being short-sighted when creating the data files lead me to forget
             // about [space] and %20 in URL parameters. So use the replace to fix!
             // (THIS IS NOT A PROBLEM WITH SERVICES / LINE NAMES)
@@ -282,6 +286,33 @@
                 masstrac.greenLine.e !== undefined   )
                 document.getElementById( "lightrail" ).innerHTML = "<h2>Green Line Information</h2>" + greenText;
             
+            // Give the RSS Alerts thingy a try!
+            masstrac.getStationAlerts( stop_name );
+            
+            for (var lineCount = 0;
+                 lineCount < masstrac.stations[staNum].svcs.length;
+                 lineCount++)
+              masstrac.getLineAlerts( masstrac.stations[staNum].svcs[lineCount] );
+            
+            var alertCont = "";
+            
+            // Show or hide the alert triangle ... just because
+            if (masstrac.alerts.length > 0) {
+              $("#alertTriangle").show();
+              alertCont += "<h2 id='serviceAlerts'>Service Alerts / Advisories</h2>"
+            }
+            
+            for (var alertNum = 0;
+                 alertNum < masstrac.alerts.length;
+                 alertNum++                        ) {
+              
+              alertCont += "<b>" + masstrac.alerts[alertNum].title + 
+                           "</b><br />" + 
+                           masstrac.alerts[alertNum].content + "<br /><br />";
+            }
+            
+            document.getElementById( "servicealerts" ).innerHTML = alertCont;
+            
         } // End Function testStopLoad
     </script>
   </head>
@@ -327,7 +358,10 @@
                    title="Configure the Transit Arrival Time Display"
                    style="position:relative; top:-2px">
           </a></td>
-
+          <td id="alertTriangle">
+            <a href="#serviceAlerts"><img src="img/alert.png" width="42" height="42"
+                 title="There are service alerts impacting this station!">
+            </a></td>
           <td><a href="http://weblab.cs.uml.edu/~dbrook/temp/selector.html">
               <img src="img/project_logo.png" width="250" height="48"
                    title="Back to Boston Transit Hub's Home">
@@ -352,10 +386,14 @@
 
     <div id="lightrail">
     </div>
+    
+    <div id="servicealerts">
+    </div>
 
     <p style="color: white">
       NOTE: This page is testing live data. To prevent overuse of the MBTA servers, 
       the data for any specific line is not updated more than once per minute.
+      The RSS alert data is only updated every 5 minutes.
     </p>
     
     <p>
