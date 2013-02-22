@@ -32,6 +32,10 @@
 
         <script type="text/javascript">
             $(function getstations() {
+                
+                /*
+                 * Define station arrays
+                 */
                 var stations = [];
                 var red_line = [];
                 var orange_line = [];
@@ -42,6 +46,12 @@
                 var i = 0;
                 var j = 0;
                 
+                /*
+                 * For loop to populate station arrays
+                 * stations contains all the station names
+                 * red_line contains only the red line stations
+                 * orange_line contains the orange stations ect.
+                 */
                 for (i=0; i<masstrac.stations.length; i++) {
                     stations.push(masstrac.stations[i].name);
                     
@@ -60,32 +70,79 @@
                         }
                     }
                 }   
-                    
-                    
+                
+                /*
+                 * jQuery call to give the seach bar its autocomplete tags
+                 */
+                $( "#tags" ).autocomplete({
+                    source: stations,
+                    select: function(event, ui) {
+                        window.location = 
+                            "http://weblab.cs.uml.edu/~dbrook/masstrac/masstrac/station.html?name=" + ui.item.value;
+                    }
+                });
+                
+                $('input[type="button"]').click(function() {
+                    $('#tags').autocomplete('option', 'minLength', 0);
+                    $('#tags').autocomplete('search', $('#tags').val());
+                });
+                /*
+                 * Create vars for the lists of links that will be placed into the 
+                 * accordion content panels
+                 */
+                var redlist = $("<ul></ul>").attr('id','redlinks');
+                var orangelist = $("<ul></ul>").attr('id','orangelinks');
+                var bluelist = $("<ul></ul>").attr('id','bluelinks');
+                var greenlist = $("<ul></ul>").attr('id','greenlinks');
+                var commuterlist = $("<ul></ul>").attr('id','commuterlinks');
             
-            $( "#tags" ).autocomplete({
-                source: stations
-            });
-            
-            var redlist = $("<ul></ul>").attr('id','redlinks');
-            var orangelist = $("<ul></ul>").attr('id','orangelinks');
-            var bluelist = $("<ul></ul>").attr('id','bluelinks');
-            var greenlist = $("<ul></ul>").attr('id','greenlinks');
-            var commuterlist = $("<ul></ul>").attr('id','commuterlinks');
-        
-            for (i=0; i<red_line.length; i++) {
+                /*
+                 * Loop through the reds staion list
+                 * create link for each station
+                 * append the list to the correct content panel
+                 */
+                for (i=0; i<red_line.length; i++) {
                     redlist.append("<li><a href='station.html?name=" + 
-                                red_line[i] + "'>" + red_line[i] + "</a>");
-            }
-            $("#redcontent").append(redlist);
+                        red_line[i] + "'>" + red_line[i] + "</a>");
+                }
+                $("#r_content").append(redlist);
+                for (i=0; i<orange_line.length; i++) {
+                    orangelist.append("<li><a href='station.html?name=" + 
+                        orange_line[i] + "'>" + orange_line[i] + "</a>");
+                }
+                $("#o_content").append(orangelist);
+            
+                for (i=0; i<blue_line.length; i++) {
+                    bluelist.append("<li><a href='station.html?name=" + 
+                        blue_line[i] + "'>" + blue_line[i] + "</a>");
+                }
+                $("#b_content").append(bluelist);
+            
+                for (i=0; i<green_line.length; i++) {
+                    greenlist.append("<li><a href='station.html?name=" + 
+                        green_line[i] + "'>" + green_line[i] + "</a>");
+                }
+                $("#g_content").append(greenlist);
+            
+                for (i=0; i<commuter.length; i++) {
+                    commuterlist.append("<li><a href='station.html?name=" + 
+                        commuter[i] + "'>" + commuter[i] + "</a>");
+                }
+                $("#c_content").append(commuterlist);
         
         
-        });
+            });
         
         
-        $(function() {
-            $( "#accordion" ).accordion({ collapsible: true }, { active: false });
-        });
+            /* 
+             * This fuction transforms the accordion div into an accordion using jQuery ui
+             * collapsible: true allows the accordian to be completely colapsed
+             * activ: false loads the accordion with header active
+             * heightStyle: "content" allows the content window height be unique to its content 
+             */
+            $(function() {
+                $( "#accordion" ).accordion({ collapsible: true, active: false, heightStyle: "content"});
+            });
         </script>
 
     </head>
@@ -100,37 +157,21 @@
                         <!--<label for="tags">Station Search: </label>-->
                         <form class="form-wrapper cf">
                             <input id="tags" type="text" placeholder="Search for your station"/>
+                            <input type="button" />
                             <button type="submit">Search</button>
                         </form>
                     </div>
                     <div id="accordion">
                         <h3>RED</h3>
-                        <div id="redcontent">
-                        </div>
+                        <div id="r_content"></div>
                         <h3>ORANGE</h3>
-                        <div>
-                            <p>
-                                This is the Orange Line
-                            </p>
-                        </div>
+                        <div id="o_content"></div>
                         <h3>BLUE</h3>
-                        <div>
-                            <p>
-                                This is the Blue Line
-                            </p>
-                        </div>
+                        <div id="b_content"></div>
                         <h3>GREEN</h3>
-                        <div>
-                            <p>
-                                This is the Green Line
-                            </p>
-                        </div>
+                        <div id="g_content"></div>
                         <h3>COMMUTER RAIL</h3>
-                        <div>
-                            <p>
-                                This is the Commuter Rail
-                            </p>
-                        </div>
+                        <div id="c_content"></div>
                     </div>
                 </div>
                 <div id="map"></div>
