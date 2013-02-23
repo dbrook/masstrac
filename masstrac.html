@@ -78,7 +78,7 @@
                     source: stations,
                     select: function(event, ui) {
                         window.location = 
-                            "http://weblab.cs.uml.edu/~dbrook/masstrac/masstrac/station.html?name=" + ui.item.value;
+                            "http://weblab.cs.uml.edu/~dbrook/masstrac/masstrac/arrivals.html?name=" + ui.item.value;
                     }
                 });
                 /*
@@ -97,30 +97,30 @@
                  * append the list to the correct content panel
                  */
                 for (i=0; i<red_line.length; i++) {
-                    redlist.append("<li><a href='station.html?name=" + 
+                    redlist.append("<li><a href='arrivals.html?name=" + 
                         red_line[i] + "'>" + red_line[i] + "</a>");
                 }
                 $("#r_content").append(redlist);
                 for (i=0; i<orange_line.length; i++) {
-                    orangelist.append("<li><a href='station.html?name=" + 
+                    orangelist.append("<li><a href='arrivals.html?name=" + 
                         orange_line[i] + "'>" + orange_line[i] + "</a>");
                 }
                 $("#o_content").append(orangelist);
             
                 for (i=0; i<blue_line.length; i++) {
-                    bluelist.append("<li><a href='station.html?name=" + 
+                    bluelist.append("<li><a href='arrivals.html?name=" + 
                         blue_line[i] + "'>" + blue_line[i] + "</a>");
                 }
                 $("#b_content").append(bluelist);
             
                 for (i=0; i<green_line.length; i++) {
-                    greenlist.append("<li><a href='station.html?name=" + 
+                    greenlist.append("<li><a href='arrivals.html?name=" + 
                         green_line[i] + "'>" + green_line[i] + "</a>");
                 }
                 $("#g_content").append(greenlist);
             
                 for (i=0; i<commuter.length; i++) {
-                    commuterlist.append("<li><a href='station.html?name=" + 
+                    commuterlist.append("<li><a href='arrivals.html?name=" + 
                         commuter[i] + "'>" + commuter[i] + "</a>");
                 }
                 $("#c_content").append(commuterlist);
