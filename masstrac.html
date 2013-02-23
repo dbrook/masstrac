@@ -81,11 +81,6 @@
                             "http://weblab.cs.uml.edu/~dbrook/masstrac/masstrac/station.html?name=" + ui.item.value;
                     }
                 });
-                
-                $('input[type="button"]').click(function() {
-                    $('#tags').autocomplete('option', 'minLength', 0);
-                    $('#tags').autocomplete('search', $('#tags').val());
-                });
                 /*
                  * Create vars for the lists of links that will be placed into the 
                  * accordion content panels
@@ -157,7 +152,6 @@
                         <!--<label for="tags">Station Search: </label>-->
                         <form class="form-wrapper cf">
                             <input id="tags" type="text" placeholder="Search for your station"/>
-                            <input type="button" />
                             <button type="submit">Search</button>
                         </form>
                     </div>
