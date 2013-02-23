@@ -16,7 +16,7 @@
         station.html page for a test of the rendering.
     -->
 
-    <title>MBTA Transit Tracker Hub</title>
+    <title>Mass TRAC Testing Interface Launcher</title>
 
     <!-- This CSS file is important for laying out the page -->
     <!--<link rel="stylesheet" type="text/css" href="css/transit.css">-->
@@ -50,7 +50,7 @@
             for (var c = 0; c < masstrac.stations.length; c++) {
                 
                 allStations += masstrac.stations[c].name +
-                               " [<a href='station.html?name=" + 
+                               " [<a href='arrivals.html?name=" + 
                                masstrac.stations[c].name + "'>all</a> -- ";
                 
                 for (var d = 0; d < masstrac.stations[c].svcs.length; d++)

@@ -5,20 +5,301 @@
  *              Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
  *              Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
  *
- * Page updated by ___________________ on ____-__-__ at __:__ __
+ * Page updated by Daniel Brook on 2013-02-23 at 2:00 PM
  *
  * This style sheet will control the layout of widgets and other visual 
- * elements on the arrivals page. It includes selectors for:
- *  - 
- *  - 
- *  - 
- *  - 
- *  - 
- *  - ...
+ * elements on the arrivals page. The major accomplishments will be to do:
  * 
- * 
- * 
- * 
+ *  - One large heading / title bar area that's transparent, and holds
+ *      the various control widgets.
+ *  - A secondary heading which contains the station name and an array of
+ *      "orbs" that will indicate which lines are present / displayed.
+ *  - The station arrival data in a tabular form
+ *  - Green Line data if it's necessary
+ *  - Bus connection information
+ *  - Alert information
  */
 
+/*
+ * Have the toolbar div show up like a toolbar, stretching the width of the
+ * available screen space, and override the list structure's default rendering.
+ * This requires the body to stretch all the way to the edges as well.
+ * Took some ideas from:
+ * http://www.cssnewbie.com/super-simple-horizontal-navigation-bar/
+ * 
+ * Also a background image from subtle-patterns.com
+ */
+body {
+  margin : 0px;
+/*  overflow : hidden;    /* Make the page NOT scroll */
+  background-image : url("../img/honey_im_subtle.png");
+}
+ 
+#toolbar {
+  width             : 100%;
+  display           : table;
+  margin            : 0 0 15px 0;
+  padding           : 0;
+  background-color  : #f5d89d;
+  box-shadow        : 0px 5px 3px gray;
+  border-bottom     : 1px solid white;
+  line-height       : 3.3em;
+}
+ 
+#toolbar div {
+  display    : table-cell;
+  padding    : 0px 10px;
+}
 
+#toolbar div#refreshDiv {
+  display    : table-cell;
+  text-align : center;
+  width      : 100%;
+}
+
+
+/*
+ * This rule makes text abutting the icons in the toolbar show up vertically
+ * "middled" alongside said icons.
+ */
+#toolbar img {
+  vertical-align: middle;
+}
+
+
+/*
+ * This section lays out the station name (a header) and the associated lines
+ */
+#nameArea {
+  width     : 700px;
+  background-color : #aaaaaa;
+  padding   : 5px 15px;
+  margin-right: auto;
+  margin-left : auto;
+  border : black solid 2px;
+  clear : both;
+}
+ 
+#nameArea h1 {
+  display : inline;
+  font-family : Tahoma, Arial, sans-serif;
+}
+
+#nameArea #lineList {
+  display : inline;
+  float : right;
+  height : 50px;
+  margin : -5px -10px 0 0;
+  padding : 0;
+}
+
+#nameArea #lineList ul {
+  list-style : none;
+  margin : -5px 0 0 0;
+}
+ 
+#nameArea ul li {
+  float      : left;
+  padding    : 5px;
+}
+
+
+/*
+ * Now do the layout for the arrival details themselves
+ */
+#arrivalsArea {
+  /*
+   * Restrict this region to the size of the container (the body).
+   */
+  
+  
+  /*
+   * Show a scroll bar always, this is so the user can see the whole
+   * interface while still looking at arrival predictions.
+   */
+  overflow-y : scroll;
+  width : 730px;
+  padding : 25px 0 10px 0;
+  margin-left : auto;
+  margin-right : auto;
+}
+
+#greenArea {
+}
+
+#greenArea h2 {
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+#predictArea {
+}
+
+.tableShell {
+  display : table;
+  border-spacing : 0 5px;
+  font-family : Tahoma, Arial, sans-serif;
+  
+  /*
+   * To change the size of the font displayed in the arrival data, just change
+   * THIS instance of font-size, and the difference will cascade to the children
+   */
+  font-size : 1.0em;
+  
+  /*
+   * While the containing DIVs will be centered, the arrival tables
+   * may (as in definitely won't) follow that convention, so center these, too.
+   */
+  margin-left : auto;
+  margin-right : auto;
+}
+
+.tableShell .trip {
+  display : table-row;
+}
+
+.tableShell .trip .route {
+  vertical-align : middle;
+  text-align : center;
+  display : table-cell;
+  border-top : solid black 3px;
+  border-left : solid black 3px;
+  border-bottom : solid black 3px;
+  font-weight : bold;
+  font-size : 2.2em;
+  color : white;
+  width : 3em;            /* Should give plenty of room for abbrevs */
+  border-radius : 10px 0 0 10px;
+}
+
+.tableShell .trip .destInfo {
+  background-color : black;
+  border-top : solid black 3px;
+  border-bottom : solid black 3px;
+  color : white;
+  display : table-cell;
+  font-size : 1.3em;
+  width : 15em;
+  vertical-align : middle;
+  padding : 10px 20px;
+}
+
+.tableShell .trip .destInfo .destination {
+  font-weight : bold;
+}
+
+.tableShell .trip .destInfo .tripInfo {
+/*    font-weight : bold;*/
+  font-size : .8em;
+}
+
+.tableShell .trip .countdown {
+  font-size : 1.5em;
+  background-color : #222222;
+  color : white;
+  display : table-cell;
+  border-top : solid black 3px;
+  border-right : solid black 3px;
+  border-bottom : solid black 3px;
+  vertical-align : middle;
+  text-align : right;
+  border-radius : 0 10px 10px 0;
+  padding : 10px 20px;
+  width : 5em;
+}
+
+.tableShell .trip .countdown .note {
+  font-size : 0.8em;
+}
+
+/*
+ * In case the scheduledTime class is added at the same level as
+ * the countdown div, format the whole thing w/ a diff. theme.
+ */
+.tableShell .trip .countdown.scheduled {
+  background-color : #dddddd;
+  color : black;
+}
+
+.tableShell .trip .countdown.approaching {
+  background-color : #00ffff;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+.tableShell .trip .countdown.arriving {
+  background-color : #00ff00;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+.tableShell .trip .countdown.departing {
+  background-color : #ff0000;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+/*
+ * The bus connections will be displayed as a popup (thanks to jQuery).
+ * The inspiration for these selectors is from:
+ * 
+ * http://creativeindividual.co.uk/2011/02/create-a-pop-up-div-in-jquery/
+ */
+#busArea {
+  display    : none;
+  position   : absolute;
+   
+  /*
+   * The right/top values are to make this all mesh nicely with the 
+   * heading toolbar. If that changes size, then so should these!
+   */
+  right      : 165px;
+  top        : 53px;
+  width      : 100px;
+  padding    : 10px;
+  background : #f5d89d;
+  color      : black;
+  border     : 2px solid white;
+  font-size  : 0.8em;
+  box-shadow : 5px 5px 3px gray;
+}
+ 
+#busArea h2 {
+  line-height: 1em;
+}
+ 
+#budArea ul {
+  font-size: .8em;
+}
+
+/*
+ * The alerts area will do very much the same thing as the bus connections. 
+ */
+#alertsArea {
+  display    : none;
+  position   : absolute;
+   
+  /*
+   * The right/top values are to make this all mesh nicely with the 
+   * heading toolbar. If that changes size, then so should these!
+   */
+  right      : 25px;
+  top        : 53px;
+  width      : 500px;
+  padding    : 10px;
+  background : #f5d89d;
+  color      : black;
+  border     : 2px solid white;
+  font-size  : 0.8em;
+  box-shadow : 5px 5px 3px gray;
+}
+ 
+#alertsArea h2 {
+  line-height: 1em;
+}
+ 
+#alertsArea ul {
+  font-size: .8em;
+}
