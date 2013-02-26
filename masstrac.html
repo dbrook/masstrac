@@ -77,8 +77,14 @@
                 $( "#tags" ).autocomplete({
                     source: stations,
                     select: function(event, ui) {
+                        
+                        
+                        /*
+                         * See if there is a way to make these with RELATIVE links?
+                         */
+
                         window.location = 
-                            "http://weblab.cs.uml.edu/~dbrook/masstrac/masstrac/arrivals.html?name=" + ui.item.value;
+                            "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + ui.item.value;
                     }
                 });
                 /*
