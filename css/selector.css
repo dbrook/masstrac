@@ -13,6 +13,7 @@ body {
     background-image: url('../img/honey_im_subtle.png');
 }
 
+/* Div that contains the whole page (rest of the divs) */
 #container
 {
     width: 1000px;
@@ -20,6 +21,7 @@ body {
     margin-right: auto;
 }
 
+/* Header div */
 #header
 {
     height: 150px;
@@ -28,6 +30,8 @@ body {
     background-image: url('../img/BFPBannerDone.png');
 }
 
+
+/* contains the search bar and accordion divs */
 #menu
 {
     width: 340px;
@@ -36,11 +40,13 @@ body {
     float: left;
 }
 
+/* Div for search bar */
 #searchBar
 {
     width: 340px;
 }
 
+/* Div for accordion */
 #accordion
 {
     width: 340px;
@@ -48,6 +54,7 @@ body {
     overflow-y: scroll;  /* Only scroll in y-direction */
 }
 
+/* Div for the map */
 #map
 {
     float: right;
@@ -56,6 +63,7 @@ body {
     /*border: solid;*/
 }
 
+/* The headers in the accordion */
 #accordion h3
 {
     /*height: 50px;*/
@@ -63,6 +71,7 @@ body {
     /*margin: 5px auto 5px auto;*/
 }
 
+/* The styling for the content in the accordion */
 .ui-accordion-content
 {
     overflow: visible;
@@ -105,6 +114,7 @@ body {
     
 }
 
+/* The active header */
 .ui-accordion-header-active
 {
     color: white;
