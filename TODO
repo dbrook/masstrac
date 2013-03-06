@@ -1,0 +1,64 @@
+Mass TRAC - Features not yet implemented
+========================================
+
+ Data Acquisition
+------------------
+  - Error handling
+      + Sending failure status from PHP to AJAX and properly handling them
+      + Notify users that an error occurred via the interface
+  
+  - Switch from synchronous to asynchronous AJAX operations
+      + Browser locks up as calls to the PHP and retrieval of JSON data from
+        the cached server copies are happening (AJAX in synchronous mode).
+        
+      + This could be tough because of how the JSON data is processed,
+        perhaps we should refactor the code a little bit to use the jQuery
+        $.ajaxStop() handler? (Admittedly a better understanding of AJAX 
+        would better facilitate this ... an area for more research)
+
+ Launch Page
+-------------
+  - Slight modifications in content layout
+      + On low-res screens, the heading is comically large. Perhaps redesign
+        page such that on low-res screens it's not as big and users can see
+        the entire page and not have this awkward scrolling accordion area
+        within the scrolling main page.
+
+  - Alerts on the main launch page?
+      + A mechanism to show the alerts on the front page would be cool, but
+        there's a significant problem of information overload and probably
+        no clear way to implement this.
+
+  - Favorite stations
+      + Let users save stations for quick access. Note however that our URLs
+        are constructed in a totally "bookmarkable" manner.
+
+ Mobile Site
+-------------
+  - Make the mobile site.
+
+ Arrival Information Page
+--------------------------
+  - Settings dialog
+      + jQuery UI to make a dialog or something hidden by default. When user
+        clicks the settings icon, simply display it. We'll need cookies to
+        save these options on the users' computers!
+      + Project proposal details our desired configuration parameters.
+
+  - HTML5 Canvas showing currently-tracked train positions
+      + I think we should only attempt this with the subway lines, not the
+        Commuter Rail, which would look very uninteresting.
+      + This should be reasonably "interesting" to accomplish, but would 
+        definitely add some wow factor to the site.
+
+  - Organization of arrival data
+      + The data-dump style currently used in the Alpha stage is somewhat
+        silly in its current form, especially where only one line serves a 
+        stations, like Harvard Square, where all the tables will show "RD".
+      + A better way to display might be to group trips to the same destination
+        under a heading, and then a simple table (or whatever, list...) with
+        the countdowns for each of them.
+
+... if you think of more, please just add to this file and recommit! Thanks
+
+-- Dan
