@@ -13,7 +13,7 @@
       Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
       be used for any purpose so long as credit to the author is given.
       
-      Page updated by Daniel Brook on 2013-02-23 at 2:00 PM
+      Page updated by Daniel Brook on 2013-03-13 at 4:50 PM
       
       Description:
       This page will serve as the interface users will see after selecting a 
@@ -39,6 +39,7 @@
       mbta_colors.css as a separate entity.
     -->
     <link rel="stylesheet" type="text/css" href="css/arrivals.css">
+    <link rel="stylesheet" type="text/css" href="css/black-tie/jquery-ui-1.10.1.custom.css">
     <link rel="stylesheet" type="text/css" href="css/mbta_colors.css">
     
     <!--
@@ -66,8 +67,10 @@
       information for the user.
     -->
     <script src="lib/jhmformutils.js" type="text/javascript"></script>
+    
     <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="lib/jquery-ui-1.10.1.custom.min.js" type="type/javascript"></script>
+    
     <script src="lib/structures.js" type="text/javascript"></script>
     <script src="lib/stations.js" type="text/javascript"></script>
     <script src="lib/green.js" type="text/javascript"></script>
@@ -78,11 +81,10 @@
       When ready, start requesting the arrival data.
     -->
     <script>
-      
-      function reloadData( stop_name )
+      function reloadData()
       {
         // Give visual feedback that a refresh is happening
-        $("#refreshDiv").html("Acquiring Data...");
+        $("#refreshDiv").html("Retrieving New Data");
         
         /*
          * Before doing anything else, empty the masstrac.arrivals array
@@ -91,34 +93,29 @@
         masstrac.dumpData();
         
         /*
-         * Find where the station is in masstrac.stations and make shortcut
-         */
-        var staObj = masstrac.lookupStation( stop_name );
-        
-        ///////////////////////////////////////////////////////////////////////
-        ////////////////// SHOULD DO SOMETHING IF THIS FAILS //////////////////
-        ///////////////////////////////////////////////////////////////////////
-        
-        /*
-         * Make the header area with the station name and line selectors
-         */
-        makeTitle( staObj.name, staObj.svcs );
-        
-        /*
          * Request new arrival data (for the predictable lines)
          */
         for (var service = 0; service < staObj.svcs.length; service++) {
-          masstrac.getCommuterRail( stop_name, staObj.svcs[service] );
-          masstrac.getSubway( stop_name, staObj.svcs[service] );
+          /*
+           * Try and get the arrivals for the station on [each] applicable line.
+           * If an error occurs, this just stops and leaves a warning icon.
+           */
+          if (masstrac.getArrivals( staObj.name, staObj.svcs[service] ) == false) {
+
+            $("#refreshDiv").html(
+            "<img src='img/hard_error.png' width='42' height='42'" + 
+              " title='Data Acquisition Error, try refreshing the page again.'>" +
+              " Arrival Time Error"
+            );
+            
+            return;
+          }
           
           /*
-           * Request Green Line headways (this will remove the Green Line 
-           * display area if branches of the Green Line at this station.
+           * Show Green Line headways if applicable
            */
-          if (staObj.svcs[service] == "green") {
-            masstrac.getGreen( stop_name );
+          if (staObj.svcs[service] == "green")
             displayGreenLine();
-          }
         }
         
         /*
@@ -127,15 +124,19 @@
         displayArrivals();
         
         /*
-         * Now run the alert grabbers (one for station and one for the lines)
-         * and see if there are any pertinent ones. If there are, then the
-         * appropriate icon should be displayed, and the alertsArea div should
-         * get the data.
+         * Now run the alert grabber. This will append to masstrac.alerts[] for
+         * each relevant (to the station AND each line servicing that station)
+         * alert. Any pertinent alerts will display the alert icon, as well as
+         * make the alerts div displayable.
          */
-        masstrac.getStationAlerts( stop_name );
-        
-        for (var lineCount = 0; lineCount < staObj.svcs.length; lineCount++)
-          masstrac.getLineAlerts( staObj.svcs[lineCount] );
+        if (masstrac.getStationAlerts( staObj ) == false) {
+            $("#refreshDiv").html(
+            "<img src='img/hard_error.png' width='42' height='42'" + 
+              " title='Data Acquisition Error, try refreshing the page again.'>" +
+              " Alert Feed Error"
+            );
+            return;
+        }
         
         /*
          * Now see if the alert data needs to even be shown
@@ -157,21 +158,73 @@
          */
         if (staObj.bus.length > 0) {
           displayBus( staObj );
-          
-          // And actually show the bus icon
-          $("#busConnections").show();
-        } else {
-          $("#busConnections").hide();
         }
         
-        // Put the refresh button back with the new time
-        $("#refreshDiv").html(
-          "<img src='img/view-refresh.png' width='42' height='42' title='Refresh the data manually'>"
-        );
+        // Put the refresh div back with the new time
+        // Apparently constructing time stamps is a total pain, but this
+        // the most likely to work across browsers.
+        var now = new Date();
         
+        var updTime = now.getHours();
+        if (now.getMinutes() < 10) updTime += ":" + 0 + now.getMinutes();
+        else                       updTime += ":" + now.getMinutes();
+        
+        if (now.getSeconds() < 10) updTime += ":" + 0 + now.getSeconds();
+        else                       updTime += ":" + now.getSeconds();
+        
+        if (auto_update_flag == "on") {
+          $("#refreshDiv").html( "Updated: " + updTime );
+        } else {
+          $("#refreshDiv").html(
+          "<img src='img/view-refresh.png' width='42' height='42' " + 
+            "title='Refresh the data manually'>" + " Updated: " + updTime );
+        }
       }  // End of GLOBAL NAMESPACE function reloadData()
     </script>
     <script>
+      /*
+       * The auto-update function should be run with a true argument to
+       * enable the clock and have the page try and update automatically.
+       * To disable, just send it false.
+       * 
+       * http://www.w3schools.com/js/js_timing.asp
+       */
+      
+      // Instantiate the auto_active variable first
+      var auto_active;
+      
+      function autoUpdate( mode ) {
+        if (mode) {
+          /*
+           * Start the timer if requested, but also update the widgets to
+           * reflect that context of automatic updates (i.e. no manual refresh)
+           * 60000 = 60 seconds (1 minute)
+           */
+          auto_active = window.setInterval( reloadData , 60000 );
+          $("#refreshDiv").html("Automatic Refresh Enabled");
+          $("#autoRefToggle").html("<img src='img/auto-refresh.png'" + 
+            "width='42' height='42' title='Turn Automatic Refresh Off'>");
+          
+          // Disassociate the click handler if auto refresh is on
+          $("#refreshDiv").unbind( "click" );
+                  
+        } else {
+          window.clearInterval( auto_active );
+          $("#refreshDiv").html("<img id='refIcon' src='img/view-refresh.png'" +
+            "width='42' height='42' title='Refresh the data manually'>" + 
+            " Click to Refresh");
+          $("#autoRefToggle").html("<img src='img/auto-refresh-off.png'" + 
+            "width='42' height='42' title='Turn Automatic Refresh On'>");
+          
+          // Assign the reload data function to the 
+          // click-handler on the refresh icon.
+          $("#refreshDiv").click( function () {
+            reloadData();
+          });
+        }
+      }  // End of GLOBAL NAMESPACE function autoUpdate( bool )
+      
+      
       /*
        * The ready function (from jQuery) that will load on startup.
        */
@@ -182,43 +235,94 @@
         // Thanks to:
         // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
         
-        // The stop_name is made global so the reloadData function can be called 
-        // without the need to regenerate stop_name each time.
-        stop_name = (getParameter( "name" )).split("%20").join(" ");
+        var stop_name = (getParameter( "name" )).split("%20").join(" ");
         
-        // Assign Operations to the controls by their IDs
-        $("#refreshDiv").click( function () {
-          reloadData( stop_name );
-        });
+        // Should automatic refreshing be enabled?
+        auto_update_flag = getParameter( "autoRef" );
+        
+        if (auto_update_flag == "on")
+          autoUpdate( true );
+        else
+          autoUpdate( false );
+        
+        /*
+         * Find where the station is in masstrac.stations and make shortcut
+         * This will be global to make life a little easier.
+         */
+        staObj = masstrac.lookupStation( stop_name );
+        
+        if (staObj == false) {
+          $("#refreshDiv").html(
+          "<img src='img/hard_error.png' width='42' height='42'" + 
+            " title='Data Acquisition Error, try refreshing the page.'>" +
+            " Invalid Station Name"
+          );
+          return;
+        }
+        
+        /*
+         * Make the header area with the station name and line selectors
+         */
+        makeTitle( staObj );
         
         // The hover / click event techniques come from here:
         // http://creativeindividual.co.uk/2011/02/create-a-pop-up-div-in-jquery/
         // Note that there is some requisite CSS happening here, too
         
-        $("#busConnections").hover( function (event) {
-          $("#busArea").toggle();
-        });
-        
         // This is needed to KEEP the window hovered if the mouse goes into it
-        $("#busArea").hover( function (event) {
-          $("#busArea").toggle();
-        });
-        
         $("#iconAlert").hover( function (event) {
           $("#alertsArea").toggle();
         });
-        
         $("#alertsArea").hover( function (event) {
           $("#alertsArea").toggle();
         });
         
-        // Set visibility of regions at startup (don't show bus, alerts by def.)
-        $("#busArea").hide();
-        $("#alertsArea").hide();
+        $("#disclaimShow").hover( function (event) { $("#disclaimer").toggle(); });
+        $("#disclaimer").hover( function (event) { $("#disclaimer").toggle(); });
         
+        // Set visibility of regions at startup (don't show bus, alerts by def.)
+        $("#alertsArea").hide();
+        $("#iconAlert").hide();
+        $("#busArea").hide();
+        
+        // Tab-ify the the supplemental content area
+        // FOR NOW just hide because it is being unruly.
+        $("#supplementalContent").hide(); //tabs({event: "mouseover"});
+        
+        // Force the resize handler to fire right at load time
+        $(window).resize();
+        
+        // Assign the toggle-able automatic-refresh to the assigned icon
+        $("#autoRefToggle").click( function () {
+          if (auto_update_flag == "on") {
+            autoUpdate( false );
+            auto_update_flag = "off";
+          } else {
+            autoUpdate( true );
+            auto_update_flag = "on";
+          }
+        });
+
         // When the page loads, do the data request.
-        reloadData( stop_name );
+        reloadData();
       });  // End of jQuery document/ready function
+      
+      /*
+       * The Resize Event Handler will make sure that the content still displays
+       * as we intended when the user tries to make the window shorter / taller.
+       * Set the height of the arrivals display based on the remaining room
+       * on the screen (after subtracting height of toolbar and footer), this
+       * should optimize the viewing area nicely.
+       * 
+       * This idea was based off of code found at:
+       * http://stackoverflow.com/questions/1443465/jquery-dynamic-div-height
+       */
+      $(window).resize( function () {
+        $("#arrivalsArea").css({'height':
+          (($(window).height()) - ($("#toolbar").height() + $("#nameArea").height() + 50)) + "px"
+        });
+      });
+      
     </script>
   </head>
 
@@ -234,19 +338,18 @@
        - Title bar with Mass TRAC logo / name on the left
        - Manual refresh button w/ Time of last refresh next to it
        - On the right, have a series of status icons:
-          - Bus connection indicator (drop down ... jQuery UI needed)
-          - Alerts exist indicator icon (a drop down as well)
+          - Alerts exist indicator icon
           - Automatic refresh mode indicator
        - And finally a settings button
+    
+      A special thanks goes out to the Tango Desktop Project, for the free /
+      open icon set that we've used in this site's interface.
     -->
     <div id="toolbar">
       <div>
         <img src="img/logos/MTlogo1.png" width="235" height="40">
       </div>
-      <div id="refreshDiv">
-        <img src="img/view-refresh.png" width="42" height="42"
-             title="Refresh the data manually">
-      </div>
+        <div id="refreshDiv"></div>
       
       <!-- These are in their own DIV so they'll group together and
            be arranged as said group, preventing a weird "scattered" look -->
@@ -254,20 +357,9 @@
         <div id="iconAlert">
           <img src="img/alert.png" width="42" height="42">
         </div>
-        <div id="busConnections">
-          <!--
-            The bus image was converted from an SVG from:
-            http://clipartist.info/www/CLIPARTIST.ORG/rg1024/rg_1_24_Bus_isometric_icon_Scalable_Vector_Graphics_SVG.svg.html
-          -->
-          <img src="img/bus.png" width="42" height="42">
-        </div>
-        <div id="autoRefToggle">
-          <img src="img/auto-refresh-off.png" width="42" height="42"
-               title="Automatic Refresh Toggle">
-        </div>
-        <div>
-          <img src="img/launch-kiosk.png" width="42" height="42"
-               title="Switch to a kiosk-friendlier layout.">
+        <div id="autoRefToggle"></div>
+        <div id="disclaimShow">
+          <img src="img/helpabout.png" width="42" height="42">
         </div>
         <div>
           <img src="img/preferences-system.png" width="42" height="42"
@@ -280,20 +372,57 @@
     
     <!--
       Set up some divs that will eventually hold arrival data.
-      
-      TODO: going to need to figure out this organization a little bit.
     -->
-    <div id="nameArea"></div>
+    <div id="dynContentArea">
+      <div id="nameArea"></div>
 
-    <!-- The arrivals are all grouped together because they need to scroll -->
-    <div id="arrivalsArea">
-      <div id="predictArea"></div>
-      <div id="greenArea"></div>
+      <!-- The arrivals are all grouped together because they need to scroll -->
+      <div id="arrivalsArea">
+        <div id="predictArea"></div>
+        <div id="greenArea"></div>
+      </div>
+      
+      <!-- 
+      This supplemental area will be a big tabs widget to show either:
+        - Bus Connections
+        - Service Alerts (default active if alerts present)
+        - Real-Time Position Coordinates
+        - If nothing pertinent can be displayed, then ????????
+      -->
+      <div id="supplementalContent">
+        <ul>
+          <li><a href="#liveAlerts">Service Alerts</a></li>
+          <li><a href="#staticBus">Bus Connections</a></li>
+          <li><a href="#liveRed">Red Line</a></li>
+          <li><a href="#liveOrange">Orange Line</a></li>
+          <li><a href="#liveBlue">Blue Line</a></li>
+        </ul>
+        <div id="liveAlerts"></div>
+        <div id="staticBus"></div>
+        <div id="liveRed">
+          <canvas id="redPlot"></canvas>
+        </div>
+        <div id="liveOrange">
+          <canvas id="orangePlot"></canvas>
+        </div>
+        <div id="liveBlue">
+          <canvas id="bluePlot"></canvas>
+        </div>
+      </div>
     </div>
 
     <!-- These will be hidden by default (by jQuery) -->
     <div id="alertsArea"></div>
     <div id="busArea"></div>
+    
+    <div id="disclaimer">
+      <p>
+        All data is provided by MassDOT and the Massachusetts
+        Bay Transportation Authority (MBTA). The arrival predictions are 
+        based on experimental data and are offered "as-is" without any 
+        guarantee of accuracy.
+      </p>
+    </div>
     
   </body>
 </html>

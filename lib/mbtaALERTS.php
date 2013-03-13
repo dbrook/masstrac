@@ -5,10 +5,12 @@
  * Programmer: Daniel Brook, UMass Lowell Student
  *             daniel_brook@student.uml.edu
  * 
- * 
- * 
  * NOTE: Much of this code comes from doing (mostly) the same task in the
  *       mbtaJSON.php file, which contains some lenghtier comments.
+ * 
+ * Like the mbtaJSON.php file, this one now returns the full alerts XML file
+ * instead of ONLY caching the copy of the file and forcing the browser to then
+ * go fetch it separately.
  */
 
 /*
@@ -44,40 +46,46 @@ $localCacheCopy = "../data/alerts.xml";
  */
 $systemTime = time();
 $cachedFileCTime = filectime($localCacheCopy);
-print "Age of RSS feed is " . ($systemTime - $cachedFileCTime) . "sec<br />";
+//print "Age of RSS feed is " . ($systemTime - $cachedFileCTime) . "sec<br />";
 
 if (($systemTime - $cachedFileCTime) < $freezeTime) {
-  print "Server-cached RSS feed is sufficiently up to date.<br />";
-  exit();
+//  print "Server-cached RSS feed is sufficiently up to date.<br />";
+  
+  $page = file_get_contents($localCacheCopy);
+  
+} else {
+//  print "Our copy of the RSS alerts feed is old, get a new one.<br />";
+
+  /*
+   * CURL Initialization and run!
+   */
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_URL, $remoteSource);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  $page = curl_exec($curl);
+  curl_close($curl);
+
+//  print "Successfully retrieved new RSS alert data from the MBTA.<br />";
+
+  /*
+   * Now that we have a copy of the CURLed source, save 
+   * it to a local file for our server to give to users.
+   * (This logic was taken from the mbtaJSON.php file, which
+   * cites the source of these following statements)
+   */
+  if (!$cachedCopyPtr = fopen($localCacheCopy, 'w')) {
+//    echo "Cannot open file ($localCacheCopy)";
+    echo "error";
+    exit();
+  }
+
+  if (fwrite($cachedCopyPtr, $page) === FALSE) {
+//    echo "Cannot write to file ($localCacheCopy)";
+    echo "error";
+    exit;
+  }
+  
+  fclose($cachedCopyPtr);
 }
-print "Our copy of the RSS alerts feed is old, get a new one.<br />";
-
-/*
- * CURL Initialization and run!
- */
-$curl = curl_init();
-curl_setopt($curl, CURLOPT_URL, $remoteSource);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-$page = curl_exec($curl);
-curl_close($curl);
-
-print "Successfully retrieved new RSS alert data from the MBTA.<br />";
-
-/*
- * Now that we have a copy of the CURLed source, save 
- * it to a local file for our server to give to users.
- * (This logic was taken from the mbtaJSON.php file, which
- * cites the source of these following statements)
- */
-if (!$cachedCopyPtr = fopen($localCacheCopy, 'w')) {
-  echo "Cannot open file ($localCacheCopy)";
-  exit();
-}
-
-if (fwrite($cachedCopyPtr, $page) === FALSE) {
-  echo "Cannot write to file ($localCacheCopy)";
-  exit;
-}
-
-fclose($cachedCopyPtr);
+echo $page;
 ?>

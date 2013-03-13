@@ -3,23 +3,29 @@ Mass TRAC - Features not yet implemented
 
  Data Acquisition
 ------------------
-  - Error handling
+  - Error handling                                                          DONE
       + Sending failure status from PHP to AJAX and properly handling them
       + Notify users that an error occurred via the interface
   
-  - Switch from synchronous to asynchronous AJAX operations
+  - Streamline the alert data acquisition                                   DONE
+      + Currently it requires pegging the PHP script for EACH service, and
+        is hugely wasteful from a parsing perspective (the poor browsers!)
+      + Going to switch to a single function call that will encapsulate loops.
+  
+  - Switch from synchronous to asynchronous AJAX operations                 OMIT
       + Browser locks up as calls to the PHP and retrieval of JSON data from
         the cached server copies are happening (AJAX in synchronous mode).
-        
       + This could be tough because of how the JSON data is processed,
         perhaps we should refactor the code a little bit to use the jQuery
         $.ajaxStop() handler? (Admittedly a better understanding of AJAX 
         would better facilitate this ... an area for more research)
+      + Flagged "OMIT" because the data acquisition is so much quicker now it
+        really doesn't matter.
 
  Launch Page
 -------------
   - Slight modifications in content layout
-      + On low-res screens, the heading is comically large. Perhaps redesign
+      + On low-res screens, the heading is extremely large. Perhaps redesign
         page such that on low-res screens it's not as big and users can see
         the entire page and not have this awkward scrolling accordion area
         within the scrolling main page.
@@ -27,7 +33,7 @@ Mass TRAC - Features not yet implemented
   - Alerts on the main launch page?
       + A mechanism to show the alerts on the front page would be cool, but
         there's a significant problem of information overload and probably
-        no clear way to implement this.
+        no clear way to rectify that.
 
   - Favorite stations
       + Let users save stations for quick access. Note however that our URLs
@@ -35,7 +41,8 @@ Mass TRAC - Features not yet implemented
 
  Mobile Site
 -------------
-  - Make the mobile site.
+  - Make the mobile site
+      + Any issues so far?
 
  Arrival Information Page
 --------------------------
@@ -58,6 +65,14 @@ Mass TRAC - Features not yet implemented
       + A better way to display might be to group trips to the same destination
         under a heading, and then a simple table (or whatever, list...) with
         the countdowns for each of them.
+
+  - Automatic Data Refreshing / Updating                                    DONE
+      + Make the auto refresh button trigger the timer structure to request new
+        data from the servers without user intervention.
+      + This still needs to reworking to operate as expected.
+
+  - COOKIES. How, what, why?
+      + Save the users settings. What settings? See the proposal.
 
 ... if you think of more, please just add to this file and recommit! Thanks
 

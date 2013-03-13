@@ -5,7 +5,7 @@
  *              Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
  *              Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
  *
- * Page updated by Daniel Brook on 2013-02-23 at 2:00 PM
+ * Page updated by Daniel Brook on 2013-03-13 at 4:50 PM
  *
  * This style sheet will control the layout of widgets and other visual 
  * elements on the arrivals page. The major accomplishments will be to do:
@@ -30,20 +30,22 @@
  * Also a background image from subtle-patterns.com
  */
 body {
-  margin : 0px;
-/*  overflow : hidden;    /* Make the page NOT scroll */
+  margin : 0px auto;
+  
+  overflow-y : hidden;    /* Make the page NOT scroll since the content height
+                           will always be within confines of the window */
   background-image : url("../img/honey_im_subtle.png");
 }
  
 #toolbar {
   width             : 100%;
   display           : table;
-  margin            : 0 0 15px 0;
+  margin            : 0 0 -5px 0;
   padding           : 0;
   background-color  : #222222;
 /*  background-color  : #f5d89d; */ /* The soft orange */
   box-shadow        : 0px 5px 3px gray;
-  border-bottom     : 1px solid white;
+  border-bottom     : 1px solid black;
   line-height       : 3.3em;
 }
  
@@ -52,13 +54,12 @@ body {
   padding    : 0px 10px;
 }
 
-#toolbar div#refreshDiv {
+#refreshDiv {
   display    : table-cell;
-  text-align : center;
   width      : 100%;
   color      : white;
+  text-align : center;
 }
-
 
 /*
  * This rule makes text abutting the icons in the toolbar show up vertically
@@ -68,20 +69,30 @@ body {
   vertical-align: middle;
 }
 
-
 /*
  * This section lays out the station name (a header) and the associated lines
  */
-#nameArea {
-  width     : 700px;
-  background-color : #aaaaaa;
-  padding   : 5px 15px;
+#dynContentArea {
+  width     : 1000px;
   margin-right: auto;
   margin-left : auto;
-  border : black solid 2px;
+}
+
+/* Make all sub headings within the dynamic content area more compact */
+#dynContentArea h2 {
+  font-family: Tahoma, Arial, sans-serif;
+  margin : 5px 0;
+  text-align: center;
+}
+
+#nameArea {
+  background-color : #aaaaaa;
+  padding   : 5px 12px;
+/*  border-bottom : black solid 2px;
+  border-top    : black solid 2px;*/
   clear : both;
 }
- 
+
 #nameArea h1 {
   display : inline;
   font-family : Tahoma, Arial, sans-serif;
@@ -111,26 +122,28 @@ body {
  */
 #arrivalsArea {
   /*
-   * Restrict this region to the size of the container (the body).
-   */
-  
-  
-  /*
    * Show a scroll bar always, this is so the user can see the whole
    * interface while still looking at arrival predictions.
    */
   overflow-y : scroll;
-  width : 730px;
-  padding : 25px 0 10px 0;
-  margin-left : auto;
-  margin-right : auto;
+  width : 470px;
+  padding : 5px 6px 0 5px;
+  margin-left : 0px;
+  margin-right : 2px;
+  background : #aaaaaa;
+  /* 
+   * Make the predictions appear next to the canvas widget. 
+   */
+  display : inline-block;
+  
+  /*
+   * The neighboring div makes the arrivals appear to the lower left
+   * unless the vertical align is pushed up.
+   */
+  vertical-align: top;
 }
 
 #greenArea {
-}
-
-#greenArea h2 {
-  font-family: Tahoma, Arial, sans-serif;
 }
 
 #predictArea {
@@ -145,7 +158,7 @@ body {
    * To change the size of the font displayed in the arrival data, just change
    * THIS instance of font-size, and the difference will cascade to the children
    */
-  font-size : 1.0em;
+  font-size : 0.70em;
   
   /*
    * While the containing DIVs will be centered, the arrival tables
@@ -157,6 +170,11 @@ body {
 
 .tableShell .trip {
   display : table-row;
+  
+  /*
+   * Minimum Height
+   */
+  height: 5.7em;
 }
 
 .tableShell .trip .route {
@@ -182,7 +200,7 @@ body {
   font-size : 1.3em;
   width : 15em;
   vertical-align : middle;
-  padding : 10px 20px;
+  padding : 10px 15px;
 }
 
 .tableShell .trip .destInfo .destination {
@@ -244,12 +262,12 @@ body {
 }
 
 /*
- * The bus connections will be displayed as a popup (thanks to jQuery).
+ * The help / about information will be displayed as a popup (thanks to jQuery).
  * The inspiration for these selectors is from:
  * 
  * http://creativeindividual.co.uk/2011/02/create-a-pop-up-div-in-jquery/
  */
-#busArea {
+#disclaimer {
   display    : none;
   position   : absolute;
    
@@ -258,10 +276,10 @@ body {
    * heading toolbar. If that changes size, then so should these!
    */
   font-family: Tahoma, Arial, sans-serif;
-  right      : 165px;
+  right      : 50px;
   top        : 53px;
-  width      : 100px;
-  padding    : 10px;
+  width      : 500px;
+  padding    : 5px 15px;
   background : #222222;
   color      : white;
   border     : 2px solid white;
@@ -306,4 +324,20 @@ body {
  
 #alertsArea ul {
   font-size: .8em;
+}
+
+/*
+ * Place the additional tabs zone and make it show next to the 
+ * arrival information.
+ */
+#supplementalContent {
+  display : inline-block;
+  margin-top: 5px;
+  padding-right: 5px;
+}
+
+#supplementalContent canvas {
+  border  : 1px solid white;
+  height  : 475px;
+  width   : 475px;
 }
