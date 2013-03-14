@@ -1,0 +1,222 @@
+/* 
+ * Filename: css/data_tester.css
+ * 
+ * Programmers: Daniel Brook, UMass Lowell Student (daniel_brook@student.uml.edu)
+ * 
+ * THIS IS NOT PRODUCTION CODE.
+ * This is the style sheet to format the data acquisition and display test page.
+ * It is intended to be used on mobile platforms / browsers as a stop-gap to 
+ * actually use the site in some productive fashion until the full mobile site
+ * is completed. As such, this will be commented sparingly.
+ * 
+ * Much of the code is reused from arrivals.css anyway, so poke around there
+ * if you're curious.
+ */
+
+body {
+  margin: 0;
+  width : 100%;
+  font-size: 1.4em;
+  background-color  : #aaaaaa;
+}
+ 
+#toolbar {
+  width             : 100%;
+  display           : table;
+  margin            : 0 0 -5px 0;
+  padding           : 0;
+  background-color  : #222222;
+  background-image  : url("black-tie/images/ui-bg_diagonals-thick_8_333333_40x40.png");
+  border-bottom     : 1px solid black;
+  line-height       : 2.5em;
+  font-size         : 1.5em;
+}
+ 
+#toolbar div {
+  display    : table-cell;
+  padding    : 0px 10px;
+}
+
+#refreshDiv {
+  display    : table-cell;
+  width      : 100%;
+  color      : white;
+  text-align : center;
+}
+
+/*
+ * This rule makes text abutting the icons in the toolbar show up vertically
+ * "middled" alongside said icons.
+ */
+#toolbar img {
+  vertical-align: middle;
+}
+
+/*
+ * This section lays out the station name (a header) and the associated lines
+ */
+#dynContentArea {
+}
+
+/* Make all sub headings within the dynamic content area more compact */
+#dynContentArea h2 {
+  font-family: Tahoma, Arial, sans-serif;
+  margin : 5px 0;
+  text-align: center;
+}
+
+#nameArea {
+  padding   : 5px 12px;
+/*  border-bottom : black solid 2px;
+  border-top    : black solid 2px;*/
+  clear : both;
+  text-align: center;
+}
+
+#nameArea h1 {
+  display : inline;
+  font-family : Tahoma, Arial, sans-serif;
+}
+
+#nameArea #lineList {
+  display : none;
+}
+
+/*
+ * Now do the layout for the arrival details themselves
+ */
+#arrivalsArea {
+  padding : 5px 5px 0 5px;
+}
+
+#greenArea {
+}
+
+#predictArea {
+}
+
+/*
+ * Since CSS lets us align divs in tabular form, but with a much cleaner
+ * structure than pure HTML tables, we use this layout. The subsequent rules
+ * beneath the tableShell class are what deal with this option.
+ */
+.tableShell {
+  display : table;
+  border-spacing : 0 5px;
+  font-family : Tahoma, Arial, sans-serif;
+  
+  /*
+   * To change the size of the font displayed in the arrival data, just change
+   * THIS instance of font-size, and the difference will cascade to the children
+   */
+  font-size : 1.0em;
+  
+  /*
+   * While the containing DIVs will be centered, the arrival tables
+   * may (as in definitely won't) follow that convention, so center these, too.
+   */
+  margin-left : auto;
+  margin-right : auto;
+}
+
+.tableShell .trip {
+  display : table-row;
+}
+
+.tableShell .trip .route {
+  vertical-align : middle;
+  text-align : center;
+  display : table-cell;
+  border-top : solid black 3px;
+  border-left : solid black 3px;
+  border-bottom : solid black 3px;
+  font-weight : bold;
+  font-size : 2.2em;
+  color : white;
+  width : 3em;            /* Should give plenty of room for abbrevs */
+  border-radius : 10px 0 0 10px;
+}
+
+.tableShell .trip .destInfo {
+  background-color : black;
+  border-top : solid black 3px;
+  border-bottom : solid black 3px;
+  color : white;
+  display : table-cell;
+  font-size : 1.3em;
+  width : 15em;
+  vertical-align : middle;
+  padding : 10px 15px;
+}
+
+.tableShell .trip .destInfo .destination {
+  font-weight : bold;
+  font-size   : 1.1em;
+}
+
+.tableShell .trip .destInfo .tripInfo {
+/*    font-weight : bold;*/
+  font-size : .8em;
+}
+
+.tableShell .trip .countdown {
+  font-size : 1.5em;
+  background-color : #222222;
+  color : white;
+  display : table-cell;
+  border-top : solid black 3px;
+  border-right : solid black 3px;
+  border-bottom : solid black 3px;
+  vertical-align : middle;
+  text-align : right;
+  border-radius : 0 10px 10px 0;
+  padding : 10px 20px;
+  width : 5em;
+}
+
+.tableShell .trip .countdown .note {
+  font-size : 0.8em;
+}
+
+/*
+ * In case the scheduledTime class is added at the same level as
+ * the countdown div, format the whole thing w/ a diff. theme.
+ */
+.tableShell .trip .countdown.scheduled {
+  background-color : #dddddd;
+  color : black;
+}
+
+.tableShell .trip .countdown.approaching {
+  background-color : #00ffff;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+.tableShell .trip .countdown.arriving {
+  background-color : #00ff00;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+.tableShell .trip .countdown.departing {
+  background-color : #ff0000;
+  color : black;
+  text-align : center;
+  font-weight : bold;
+}
+
+/*
+ * The help / about information will be displayed as a popup (thanks to jQuery).
+ * The inspiration for these selectors is from:
+ * 
+ * http://creativeindividual.co.uk/2011/02/create-a-pop-up-div-in-jquery/
+ */
+#disclaimer {
+  padding    : 5px 15px;
+  background : #222222;
+  color      : white;
+  font-size  : 0.75em;
+}

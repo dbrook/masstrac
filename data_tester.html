@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!--
+      File: arrivals.html
+      
+      Programmers:
+      Daniel Brook, UMass Lowell student (daniel_brook@student.uml.edu)
+      
+      Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
+      be used for any purpose so long as credit to the author is given.
+      
+      Description:
+      THIS IS NOT PRODUCTION CODE. This page exists purely as a testing 
+      interface to experiment with rendering / grabbing arrival data. It 
+      has very basic functionality to render easily on mobile browsers to see
+      train arrival times as a stop-gap until the mobile site is live.
+    -->
+
+    <title>Mass TRAC - Station Arrival Information Page</title>
+
+    <!--
+      The main style sheet for this page is arrivals.css, but to keep a 
+      consistent color scheme for the lines that use the MBTA's CSS colors,
+      mbta_colors.css as a separate entity.
+    -->
+    <link rel="stylesheet" type="text/css" href="css/data_tester.css">
+    <link rel="stylesheet" type="text/css" href="css/black-tie/jquery-ui-1.10.1.custom.css">
+    <link rel="stylesheet" type="text/css" href="css/mbta_colors.css">
+    
+    <!--
+      This page's very existence relies on a good chunk of JavaScript.
+    -->
+    <script src="lib/jhmformutils.js" type="text/javascript"></script>
+    
+    <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="lib/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    
+    <script src="lib/structures.js" type="text/javascript"></script>
+    <script src="lib/stations.js" type="text/javascript"></script>
+    <script src="lib/green.js" type="text/javascript"></script>
+    <script src="lib/datagetter.js" type="text/javascript"></script>
+    <script src="lib/ui.js" type="text/javascript"></script>
+    
+    <!--
+      Just grab the arrival data when reloadData() is called.
+    -->
+    <script>
+      function reloadData()
+      {
+        $("#refreshDiv").html("Retrieving New Data");
+        
+        masstrac.dumpData();
+        
+        for (var service = 0; service < staObj.svcs.length; service++) {
+          if (masstrac.getArrivals( staObj.name, staObj.svcs[service] ) == false) {
+
+            $("#refreshDiv").html(
+            "<img src='img/hard_error.png' width='42' height='42'" + 
+              " title='Data Acquisition Error, try refreshing the page again.'>" +
+              " Arrival Time Error"
+            );
+            return;
+          }
+          
+          if (staObj.svcs[service] == "green")
+            displayGreenLine();
+        }
+        
+        displayArrivals();
+        
+        var now = new Date();
+        var updTime = now.getHours();
+        if (now.getMinutes() < 10) updTime += ":" + 0 + now.getMinutes();
+        else                       updTime += ":" + now.getMinutes();
+        
+        if (now.getSeconds() < 10) updTime += ":" + 0 + now.getSeconds();
+        else                       updTime += ":" + now.getSeconds();
+        
+        $("#refreshDiv").html( "Tap here to update (Last Update " + updTime + ")");
+
+      }  // End of GLOBAL NAMESPACE function reloadData()
+    </script>
+    <script>
+      /*
+       * The ready function (from jQuery) that will load on startup.
+       */
+      $(document).ready( function () {
+        
+        var stop_name = (getParameter( "name" )).split("%20").join(" ");
+
+        staObj = masstrac.lookupStation( stop_name );
+        
+        if (staObj == false) {
+          $("#refreshDiv").html(
+          "<img src='img/hard_error.png' width='84' height='84'" + 
+            " title='Data Acquisition Error, try refreshing the page.'>" +
+            " Invalid Station Name"
+          );
+          return;
+        }
+        
+        makeTitle( staObj );
+        
+        $("#toolbar").click( function () {
+          reloadData();
+        });
+        
+        reloadData();
+        
+        //alert( "Device Pixel Ratio Code: " + window.devicePixelRatio );
+      });  // End of jQuery document/ready function
+      
+    </script>
+  </head>
+
+  <body>
+    <!--
+      The body will be relatively simple without any data loaded into it. This
+      page is generated dynamically, so much of the structure is built after 
+      the data requests are made.
+    -->
+    
+    <!--
+      First set up the heading / title bar area that will house some controls:
+       - Title bar with Mass TRAC logo / name on the left
+       - Manual refresh button w/ Time of last refresh next to it
+       - On the right, have a series of status icons:
+          - Alerts exist indicator icon
+          - Automatic refresh mode indicator
+       - And finally a settings button
+    
+      A special thanks goes out to the Tango Desktop Project, for the free /
+      open icon set that we've used in this site's interface.
+    -->
+    <div id="toolbar">
+      <div id="refreshDiv"></div>
+    </div>
+    <br />
+    
+    <!--
+      Set up some divs that will eventually hold arrival data.
+    -->
+    <div id="dynContentArea">
+      <div id="nameArea"></div>
+
+      <!-- The arrivals are all grouped together because they need to scroll -->
+      <div id="arrivalsArea">
+        <div id="predictArea"></div>
+        <div id="greenArea"></div>
+      </div>
+    </div>
+    <br />
+    <div id="disclaimer">
+      <p>
+        All data is provided by MassDOT and the Massachusetts
+        Bay Transportation Authority (MBTA). The arrival predictions are 
+        based on experimental data and are offered "as-is" without any 
+        guarantee of accuracy.
+      </p>
+    </div>
+    
+  </body>
+</html>
