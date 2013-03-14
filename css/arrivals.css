@@ -32,7 +32,7 @@
 body {
   margin : 0px auto;
   
-  overflow-y : hidden;    /* Make the page NOT scroll since the content height
+/*  overflow-y : hidden;    /* Make the page NOT scroll since the content height
                            will always be within confines of the window */
   background-image : url("../img/honey_im_subtle.png");
 }
@@ -43,6 +43,7 @@ body {
   margin            : 0 0 -5px 0;
   padding           : 0;
   background-color  : #222222;
+  background-image  : url("black-tie/images/ui-bg_diagonals-thick_8_333333_40x40.png");
 /*  background-color  : #f5d89d; */ /* The soft orange */
   box-shadow        : 0px 5px 3px gray;
   border-bottom     : 1px solid black;
@@ -126,10 +127,17 @@ body {
    * interface while still looking at arrival predictions.
    */
   overflow-y : scroll;
+  
+  /*
+   * Must float left (and the supplemental region to the right must float right)
+   * in order to prevent weirdness when scaling up/down like having them jump
+   * below or atop one another.
+   */
+  float : left;
   width : 470px;
-  padding : 5px 6px 0 5px;
+  padding : 5px 5px 0 5px;
   margin-left : 0px;
-  margin-right : 2px;
+  margin-right : 1px;
   background : #aaaaaa;
   /* 
    * Make the predictions appear next to the canvas widget. 
@@ -149,6 +157,11 @@ body {
 #predictArea {
 }
 
+/*
+ * Since CSS lets us align divs in tabular form, but with a much cleaner
+ * structure than pure HTML tables, we use this layout. The subsequent rules
+ * beneath the tableShell class are what deal with this option.
+ */
 .tableShell {
   display : table;
   border-spacing : 0 5px;
@@ -205,6 +218,7 @@ body {
 
 .tableShell .trip .destInfo .destination {
   font-weight : bold;
+  font-size   : 1.1em;
 }
 
 .tableShell .trip .destInfo .tripInfo {
@@ -286,58 +300,49 @@ body {
   font-size  : 0.8em;
   box-shadow : 5px 5px 3px gray;
 }
- 
-#busArea h2 {
-  line-height: 1em;
-}
- 
-#busArea a {
-  color: cyan;
-}
-
-/*
- * The alerts area will do very much the same thing as the bus connections. 
- */
-#alertsArea {
-  display    : none;
-  position   : absolute;
-   
-  /*
-   * The right/top values are to make this all mesh nicely with the 
-   * heading toolbar. If that changes size, then so should these!
-   */
-  font-family: Tahoma, Arial, sans-serif;
-  right      : 25px;
-  top        : 53px;
-  width      : 500px;
-  padding    : 10px;
-  background : #222222;
-  color      : white;
-  border     : 2px solid white;
-  font-size  : 0.8em;
-  box-shadow : 5px 5px 3px gray;
-}
- 
-#alertsArea h2 {
-  line-height: 1em;
-}
- 
-#alertsArea ul {
-  font-size: .8em;
-}
 
 /*
  * Place the additional tabs zone and make it show next to the 
  * arrival information.
+ * Since this is created in the tabs widget, we need to override the
+ * selectors as they're named from the theme / jQuery UI world.
  */
-#supplementalContent {
-  display : inline-block;
-  margin-top: 5px;
+#suppContent {
+/*  display : inline-block;*/
+  float   : right;
+  margin-top: 0px;
   padding-right: 5px;
+  width   : 500px;
+  clear   : none;
+  overflow-y : scroll;
 }
 
-#supplementalContent canvas {
-  border  : 1px solid white;
+#suppContent .ui-tabs-nav {
+  font-size : .7em;
+  font-weight: bolder;
+}
+
+#suppContent .ui-tabs-panel {
+  padding : 2px;
+}
+
+#suppContent .ui-state-disabled {
+  display : none;  /* Disabled tabs will NOT be viewable */
+}
+
+/*
+ * Scale down the font size in the alerts area, as the tabs widget decides it
+ * wants gigantic fonts.
+ */
+#alertsArea {
+  font-family : Tahoma, Arial, sans-serif;
+  font-size   : .8em;
+  margin      : 10px;
+}
+
+#suppContent canvas {
+  border  : 1px solid black;
   height  : 475px;
   width   : 475px;
+  margin  : 2px;
 }
