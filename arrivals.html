@@ -65,6 +65,9 @@
       Finally, the ui.js file does much of the work of looking through what the
       masstrac functions have populated into the array[s] and displays that
       information for the user.
+      
+      And for real finally, the canvops.js file contains all the code for 
+      plotting real-time station locations onto HTML5 canvas objects!
     -->
     <script src="lib/jhmformutils.js" type="text/javascript"></script>
     
@@ -76,6 +79,7 @@
     <script src="lib/green.js" type="text/javascript"></script>
     <script src="lib/datagetter.js" type="text/javascript"></script>
     <script src="lib/ui.js" type="text/javascript"></script>
+    <script src="lib/canvops.js" type="text/javascript"></script>
     
     <!--
       When ready, start requesting the arrival data.
@@ -158,7 +162,34 @@
           // associated CSS to NOT DISPLAY disabled things.
           $("#suppContent").tabs("disable", 0);
         }
-        
+
+        /*
+         * Plot the trains with available lat/lon information, but first we 
+         * need the base map of the lines themselves. Additionally, erasing the
+         * previous content of the canvas will prevent any strange artifacts.
+         */
+        for (var line = 0; line < staObj.svcs.length; line++) {
+          switch (staObj.svcs[line]) {
+            case "orange":
+              canvops.clearplot("orange");
+              canvops.basemap("orange");
+              canvops.plotTrips("orange");
+              break;
+            case "red":
+              canvops.clearplot("red");
+              canvops.basemap("red");
+              canvops.plotTrips("red");
+              break;
+            case "blue":
+              canvops.clearplot("blue");
+              canvops.basemap("blue");
+              canvops.plotTrips("blue");
+              break;
+            default:
+              break;
+          }
+        }
+
         // Put the refresh div back with the new time
         // Apparently constructing time stamps is a total pain, but this
         // the most likely to work across browsers.
@@ -178,6 +209,7 @@
           "<img src='img/view-refresh.png' width='42' height='42' " + 
             "title='Refresh the data manually'>" + " Updated: " + updTime );
         }
+        
       }  // End of GLOBAL NAMESPACE function reloadData()
     </script>
     <script>
@@ -199,7 +231,7 @@
            * reflect that context of automatic updates (i.e. no manual refresh)
            * 60000 = 60 seconds (1 minute)
            */
-          auto_active = window.setInterval( reloadData , 60000 );
+          auto_active = window.setInterval( reloadData , 30000 );
           $("#refreshDiv").html("Automatic Refresh Enabled");
           $("#autoRefToggle").html("<img src='img/auto-refresh.png'" + 
             "width='42' height='42' title='Turn Automatic Refresh Off'>");
@@ -305,9 +337,6 @@
           $("#suppContent").tabs("disable", 4);
         }
         
-        /*
-         * Only display tabs for the trackable lines for THIS station
-         */
         for (var line = 0; line < staObj.svcs.length; line++) {
           switch (staObj.svcs[line]) {
             case "orange":
@@ -323,6 +352,7 @@
               break;
           }
         }
+
         
         // When the page loads, do the data request.
         reloadData();
@@ -421,13 +451,25 @@
         </ul>
         <div id="alertsArea"></div>
         <div id="liveRed">
-          <canvas id="redPlot"></canvas>
+          <canvas id="redPlot" width="475" height="475">
+            Sorry, you're browser doesn't support HTML5's canvas widget.
+            If it did, you'd be seeing a pretty sweet map of the Red Line's
+            current train positions. 
+          </canvas>
         </div>
         <div id="liveOrange">
-          <canvas id="orangePlot"></canvas>
+          <canvas id="orangePlot" width="475" height="475">
+            Sorry, you're browser doesn't support HTML5's canvas widget.
+            If it did, you'd be gazing upon the locations of the operating
+            Orange Line trains.
+          </canvas>
         </div>
         <div id="liveBlue">
-          <canvas id="bluePlot"></canvas>
+          <canvas id="bluePlot" width="475" height="475">
+            Sorry, you're browser doesn't support HTML5's canvas widget.
+            If it did, there would be a map of the Blue Line and the positions
+            of each operating train would be shown here instead.
+        </canvas>
         </div>
         <div id="busArea"></div>
       </div>

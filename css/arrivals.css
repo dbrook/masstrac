@@ -342,7 +342,5 @@ body {
 
 #suppContent canvas {
   border  : 1px solid black;
-  height  : 475px;
-  width   : 475px;
   margin  : 2px;
 }
