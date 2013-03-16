@@ -100,13 +100,18 @@ chdir(dirname(__FILE__));
 if ($type == "subway") {
   $remoteSource = "http://developer.mbta.com/lib/rthr/" .
                   $siteRequest . ".json";
-
+  
+  // Subway data changes really fast, so update it every 29 seconds
+  $freezeTime = 29;
+  
   // Where to put the copied file (relative to script's directory)
   $localCacheCopy = "../data/" . $siteRequest . ".json";
 
 } else {
   $remoteSource = "http://developer.mbta.com/lib/RTCR/RailLine_" .
                   $siteRequest . ".json";
+  
+  $freezeTime = 58;
 
   // Where to put the copied file (relative to script's directory)
   $localCacheCopy = "../data/RailLine_" . $siteRequest . ".json";
