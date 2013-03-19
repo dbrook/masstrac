@@ -275,6 +275,96 @@ body {
   font-weight : bold;
 }
 
+
+/*
+ * The organized-list arrival times (compressed view) visual configuration
+ * 
+ */
+.sortArrival {
+/*  background-color : black;*/
+/*  color          : white;*/
+  font-family    : Tahoma, Arial, sans-serif;
+  list-style     : none;
+  padding-left   : 0px;
+/*  padding-bottom : 5px;     /* Breathing room beneath each route */
+  font-size      : 1.5em;   /* Big font to separate route */
+  margin         : 2px;
+  border         : 3px solid black;
+  border-radius  : 10px;
+}
+
+.sortArrival .route {
+  font-weight   : bold;
+  text-align    : center;
+  padding       : 5px;
+  border-radius : 7px 7px 0px 0px;
+  color         : white;
+}
+
+.sortArrival .destination {
+  font-size   : 0.8em;
+  font-weight : bold;
+  padding     : 10px 5px 5px 5px;
+  border-top  : 2px solid black;
+}
+
+/*
+ * Outbound trains should be treated specially, since they cannot be
+ * sorted in as concise a way as the inbound arrivals (which have the same
+ * destination and lend themselves for sorting much easier).
+ */
+.sortArrival .destination.outbound {
+  display     : inline-block;
+  width       : 338px;
+  border      : none;
+}
+
+.sortArrival .countdown {
+  display     : inline-block;    /* No line breaks for each arrival time */
+  margin      : 5px 0px 5px 8px;
+  padding     : 5px;
+  width       : 65px;            /* Fits FOUR arrival orbs per line */
+  border      : 2px solid black;
+  font-size   : 0.65em;
+  text-align  : center;
+  border-radius : 5px;
+}
+
+/*
+ * Specific styling associated with each "mode" an arrival can be in.
+ * I tried combining these with the ones defined for the tabular-div setup,
+ * but the browsers were not cascading very nicely, so this way brute-forces it.
+ */
+.sortArrival .countdown.scheduled {
+  background-color : #dddddd;
+}
+
+.sortArrival .countdown.predicted {
+  background-color : #222222;
+  color            : white;
+}
+
+.sortArrival .countdown.approaching {
+  background-color : #00ffff;
+}
+
+.sortArrival .countdown.arriving {
+  background-color : #00ff00;
+}
+
+.sortArrival .countdown.departing {
+  background-color : #ff0000;
+}
+
+
+/*
+ * Needed to cascade into ALL elements of the sublists
+ */
+.sortArrival ul {
+  list-style : none;
+  padding-left : 0px;
+}
+
 /*
  * The help / about information will be displayed as a popup (thanks to jQuery).
  * The inspiration for these selectors is from:
