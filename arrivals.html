@@ -369,7 +369,7 @@
        * http://stackoverflow.com/questions/1443465/jquery-dynamic-div-height
        */
       $(window).resize( function () {
-        var newHeight = $(window).height() - ($("#toolbar").height() + $("#nameArea").height() + 50);
+        var newHeight = $(window).height() - ($("#toolbar").height() + $("#nameArea").height() + 40);
         $("#arrivalsArea").css({'height': newHeight + "px"
         });
         $("#suppContent").css({'height': newHeight - 3 + "px"});
