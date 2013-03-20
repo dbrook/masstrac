@@ -124,8 +124,11 @@
         
         /*
          * Request the arrival data to be rendered
+         * As written below, this will sort by destination,
+         * show all trips (even those terminating at the selected station),
+         * and will not print arrival predictions in hh:mm format.
          */
-        displayArrivals( "time" );
+        displayArrivals( "dest", true, false );
         
         /*
          * Now run the alert grabber. This will append to masstrac.alerts[] for
