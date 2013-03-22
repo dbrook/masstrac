@@ -124,11 +124,8 @@
         
         /*
          * Request the arrival data to be rendered
-         * As written below, this will sort by destination,
-         * show all trips (even those terminating at the selected station),
-         * and will not print arrival predictions in hh:mm format.
          */
-        displayArrivals( "dest", true, false );
+        displayArrivals( verbose, true, times );
         
         /*
          * Now run the alert grabber. This will append to masstrac.alerts[] for
@@ -136,13 +133,25 @@
          * alert. Any pertinent alerts will display the alert icon, as well as
          * make the alerts div displayable.
          */
-        if (masstrac.getStationAlerts( staObj ) == false) {
-            $("#refreshDiv").html(
-            "<img src='img/hard_error.png' width='42' height='42'" + 
-              " title='Data Acquisition Error, try refreshing the page again.'>" +
-              " Alert Feed Error"
-            );
-            return;
+        
+        // Experiment with exception handling to solve the variable "not defined"
+        // issues that arise when a problematic feed was (or couldn't be) proc'd
+        try {
+          if (masstrac.getStationAlerts( staObj ) == false) {
+              $("#refreshDiv").html(
+              "<img src='img/hard_error.png' width='42' height='42'" + 
+                " title='Data Acquisition Error, try refreshing the page again.'>" +
+                " Alert Feed Error"
+              );
+              return;
+          }
+        } catch ( e ) {
+              $("#refreshDiv").html(
+              "<img src='img/hard_error.png' width='42' height='42'" + 
+                " title='Data Acquisition Error, try refreshing the page again.'>" +
+                " Data Fetch Error, Try Again Later"
+              );
+          return;
         }
         
         /*
@@ -274,10 +283,28 @@
         // Should automatic refreshing be enabled?
         auto_update_flag = getParameter( "autoRef" );
         
+        // Should the verbose mode be used?
+        var verbose_mode_flag = getParameter( "verbose" );
+        
+        // Should the times be displayed as countdowns or like "12:44"
+        var countdown_mode_flag = getParameter( "times" );
+        
         if (auto_update_flag == "on")
           autoUpdate( true );
         else
           autoUpdate( false );
+        
+        // verbose is a global flag that will be used to determine what
+        // mode (either the sorted purely by time or more concise view)
+        if (verbose_mode_flag == "on")
+          verbose = "time";
+        else 
+          verbose = "dest";
+        
+        if (countdown_mode_flag == "on")
+          times = true;
+        else
+          times = false;
         
         /*
          * Find where the station is in masstrac.stations and make shortcut
