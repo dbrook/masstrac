@@ -5,7 +5,7 @@
  *              Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
  *              Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
  *
- * Page updated by Daniel Brook on 2013-03-13 at 4:50 PM
+ * Page updated by Daniel Brook on 2013-03-24 at 6:30 PM
  *
  * This style sheet will control the layout of widgets and other visual 
  * elements on the arrivals page. The major accomplishments will be to do:
@@ -380,9 +380,63 @@ body {
    * heading toolbar. If that changes size, then so should these!
    */
   font-family: Tahoma, Arial, sans-serif;
-  right      : 50px;
+  right      : 60px;
   top        : 53px;
-  width      : 500px;
+  width      : 850px;
+  padding    : 5px 15px;
+  background : #222222;
+  color      : white;
+  border     : 2px solid white;
+  font-size  : 0.8em;
+  box-shadow : 5px 5px 3px gray;
+}
+
+#disclaimer .layout {
+  font-size : 1em;
+  float : left;
+  margin-right : 5px;
+  padding : 5px;
+  clear : both;
+  width : 60px;
+  text-align : center;
+}
+
+.layout.scheduled {
+  background-color : #dddddd;
+  color : black;
+}
+
+.layout.predicted {
+  background-color : #222222;
+  color : white;
+}
+
+.layout.approach {
+  background-color : #00ffff;
+  color : black;
+}
+
+.layout.arrive {
+  background-color : #00ff00;
+  color : black;
+}
+
+.layout.depart {
+  background-color : #ff0000;
+  color : black;
+}
+
+/*
+ * Make the settings pane appear on a hover exactly the same as the
+ * information / disclaimer div.
+ */
+#settingsPane {
+  display    : none;
+  position   : absolute;
+  font-family: Tahoma, Arial, sans-serif;
+  right      : 5px;
+  top        : 53px;
+  width      : 300px;
   padding    : 5px 15px;
   background : #222222;
   color      : white;

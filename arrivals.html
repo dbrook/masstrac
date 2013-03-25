@@ -13,7 +13,7 @@
       Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
       be used for any purpose so long as credit to the author is given.
       
-      Page updated by Daniel Brook on 2013-03-13 at 4:50 PM
+      Page updated by Daniel Brook on 2013-03-24 at 6:00 PM
       
       Description:
       This page will serve as the interface users will see after selecting a 
@@ -23,6 +23,15 @@
       human-readable) of the underlying arrivals data structure. The output is
       a little too verbose for public consumption, but this is necessary as 
       the data's behavior continues to be examined.
+    
+      This page can be launched with the following parameters:
+        name=Name of Station - The name of the station for which arrival times
+                                should be loaded (the proper names come from 
+                                the lib/stations.js file)
+        times=on             - display the arrival times like "12:33pm"
+        verbose=on           - don't use the condensed output, instead just
+                                list the arriving trips sorted only by e.t.a.
+        autoRef=on           - automatically request new data every 30 seconds
       
       All data is provided by the Massachusetts Bay Transportation Authority
       (MBTA) and the Massachusetts Department of Transportation (MassDOT). The
@@ -97,29 +106,41 @@
         masstrac.dumpData();
         
         /*
-         * Request new arrival data (for the predictable lines)
+         * Request new arrival data (for the predictable lines).
+         * 
+         * This has now been wrapped in a try/catch because the backend will
+         * apparently just *not define* the variable that holds the JSON if
+         * the AJAX operations fail, causing the whole interface to freeze
+         * because the JS interpreter just up and quits part-way through.
          */
-        for (var service = 0; service < staObj.svcs.length; service++) {
-          /*
-           * Try and get the arrivals for the station on [each] applicable line.
-           * If an error occurs, this just stops and leaves a warning icon.
-           */
-          if (masstrac.getArrivals( staObj.name, staObj.svcs[service] ) == false) {
-
-            $("#refreshDiv").html(
-            "<img src='img/hard_error.png' width='42' height='42'" + 
-              " title='Data Acquisition Error, try refreshing the page again.'>" +
-              " Arrival Time Error"
-            );
-            
-            return;
+        try {
+          for (var service = 0; service < staObj.svcs.length; service++) {
+            /*
+             * Try and get the arrivals for the station on [each] applicable line.
+             * If an error occurs, this just stops and leaves a warning icon.
+             */
+            if (masstrac.getArrivals( staObj.name, staObj.svcs[service] ) == false) {
+              $("#refreshDiv").html(
+              "<img src='img/hard_error.png' width='42' height='42'" + 
+                " title='Data Acquisition Error, try refreshing later.'>" +
+                " Trip Data Request Error"
+              );
+              return;
+            }
+            /*
+             * Show Green Line headways if applicable.
+             */
+            if (staObj.svcs[service] == "green")
+                displayGreenLine();
           }
           
-          /*
-           * Show Green Line headways if applicable
-           */
-          if (staObj.svcs[service] == "green")
-            displayGreenLine();
+        } catch (e) {
+          $("#refreshDiv").html(
+            "<img src='img/hard_error.png' width='42' height='42'" + 
+              " title='Data Acquisition Error, try refreshing later.'>" +
+              " Trip Data Request Error"
+          );
+          return;
         }
         
         /*
@@ -140,17 +161,17 @@
           if (masstrac.getStationAlerts( staObj ) == false) {
               $("#refreshDiv").html(
               "<img src='img/hard_error.png' width='42' height='42'" + 
-                " title='Data Acquisition Error, try refreshing the page again.'>" +
+                " title='Problem fetching the alerts RSS feed.'>" +
                 " Alert Feed Error"
               );
               return;
           }
         } catch ( e ) {
-              $("#refreshDiv").html(
-              "<img src='img/hard_error.png' width='42' height='42'" + 
-                " title='Data Acquisition Error, try refreshing the page again.'>" +
-                " Data Fetch Error, Try Again Later"
-              );
+          $("#refreshDiv").html(
+            "<img src='img/hard_error.png' width='42' height='42'" + 
+            " title='Problem fetching the alerts RSS feed.'>" +
+            " Alert Feed Error"
+          );
           return;
         }
         
@@ -159,19 +180,10 @@
          */
         if (masstrac.alerts.length > 0) {
           displayAlerts();
-          
-          // Display the alert triangle icon
           $("#iconAlert").show();
-          
-          // Also enable the alerts tab forcing it to display
           $("#suppContent").tabs("enable", 0);
-          
         } else {
-          // Just gray out or hide the alert triangle.
           $("#iconAlert").hide();
-          
-          // The 1st tab is the alerts one. We disable it because we've set the
-          // associated CSS to NOT DISPLAY disabled things.
           $("#suppContent").tabs("disable", 0);
         }
 
@@ -280,31 +292,47 @@
         
         var stop_name = (getParameter( "name" )).split("%20").join(" ");
         
+        /*
+         * The submit function likes to generate plus signs instead of %20.
+         * So in case the above split/join missed it, here's the one with +.
+         */
+        stop_name = stop_name.split( "+" ).join( " " );
+        
+        // Store the station name in a secret place so it's retained when a
+        // user has to change a configuration and use the submit button.
+        $("#stationName").val( stop_name );
+        
         // Should automatic refreshing be enabled?
         auto_update_flag = getParameter( "autoRef" );
         
-        // Should the verbose mode be used?
+        // Should the verbose mode be used? (Update the settings div)
         var verbose_mode_flag = getParameter( "verbose" );
         
         // Should the times be displayed as countdowns or like "12:44"
         var countdown_mode_flag = getParameter( "times" );
         
-        if (auto_update_flag == "on")
+        if (auto_update_flag == "on") {
           autoUpdate( true );
-        else
+          $("#cb_autoRef").prop('checked', true);
+        } else {
           autoUpdate( false );
+        }
         
         // verbose is a global flag that will be used to determine what
         // mode (either the sorted purely by time or more concise view)
-        if (verbose_mode_flag == "on")
+        if (verbose_mode_flag == "on") {
           verbose = "time";
-        else 
+          $("#cb_verbose").prop('checked', true);
+        } else {
           verbose = "dest";
+        }
         
-        if (countdown_mode_flag == "on")
+        if (countdown_mode_flag == "on") {
           times = true;
-        else
+          $("#cb_clocktime").prop('checked', true);
+        } else {
           times = false;
+        }
         
         /*
          * Find where the station is in masstrac.stations and make shortcut
@@ -333,6 +361,8 @@
         // This is needed to KEEP the window hovered if the mouse goes into it
         $("#disclaimShow").hover( function (event) { $("#disclaimer").toggle(); });
         $("#disclaimer").hover( function (event) { $("#disclaimer").toggle(); });
+        $("#settingsShow").hover( function (event) { $("#settingsPane").toggle(); });
+        $("#settingsPane").hover( function (event) { $("#settingsPane").toggle(); });
         
         // Don't show alert icon by default
         $("#iconAlert").hide();
@@ -382,9 +412,8 @@
               break;
           }
         }
-
         
-        // When the page loads, do the data request.
+        // When the page loads and after all jQuery is setup, get the data.
         reloadData();
       });  // End of jQuery document/ready function
       
@@ -403,6 +432,17 @@
         $("#arrivalsArea").css({'height': newHeight + "px"
         });
         $("#suppContent").css({'height': newHeight - 3 + "px"});
+      });
+      
+      /*
+       * The submit handler will deal with reloading the page with the 
+       * appropriate URL parameters for the customizations the user decided
+       * to pick from the settings div.
+       */
+      $("#mt_settings").submit( function ()
+      {
+        $("#stationName").split( " " ).join( "%20" );
+        return true;
       });
     </script>
   </head>
@@ -443,9 +483,8 @@
         <div id="disclaimShow">
           <img src="img/helpabout.png" width="42" height="42">
         </div>
-        <div>
-          <img src="img/preferences-system.png" width="42" height="42"
-               title="Open the settings dialog">
+        <div id="settingsShow">
+          <img src="img/preferences-system.png" width="42" height="42">
         </div>
       </div>
     </div>
@@ -507,14 +546,113 @@
         <div id="busArea"></div>
       </div>
     </div>
-
+    
+    <!--
+      This area will hold the important disclaimer that the MBTA wants the
+      developers using its data to display, as well as a brief idea as to what
+      is actually being displayed on the page.
+    -->
     <div id="disclaimer">
       <p>
-        All data is provided by MassDOT and the Massachusetts
-        Bay Transportation Authority (MBTA). The arrival predictions are 
-        based on experimental data and are offered "as-is" without any 
-        guarantee of accuracy.
+        <b>Notice:</b> All data is provided by MassDOT and the Massachusetts
+        Bay Transportation Authority (MBTA). The arrival predictions are based
+        on experimental data and are offered "as-is" without any guarantee of
+        accuracy.
       </p>
+      <h3>What am I looking at, here?</h3>
+      <p>
+        Estimated arrival times appear in the left side of the window. Each one
+        is associated with a train which is heading towards the listed 
+        destination. The times are simply predictions as to how long you'll 
+        have to wait for trains (headed towards those destinations) to arrive
+        at the station you selected.
+      </p>
+      <p>
+        To the right side of the window, the content is a little more dynamic,
+        based on the station you are viewing as well as the state of the transit
+        system. At most, you'll see: an alerts tab which shows the service alerts
+        which pertain to the station, plots of the last-known subway positions,
+        and connecting bus routes at the station. Some stations will have none
+        of this information, so don't be alarmed if nothing appears there, 
+        especially for far-flung Commuter Rail stops.
+      </p>
+      <h3>What do the colors all mean?</h3>
+      <p>
+        The color scheme was designed to communicate information easily for
+        users as they become comfortable with the concept of Mass TRAC. Here's
+        what they all mean:
+      </p>
+      <div class="sortArrival layout countdown scheduled">16 min</div>
+      <b>Scheduled arrival</b>: there is no physical train associated with the listed
+      arrival time but there soon will be (or the tracking device was off, or
+      it's a phantom trip that won't actually happen (these do exist)). This
+      is more common towards the ends of the lines, where a train is likely
+      heading towards the terminal to turn around and will soon "become" the
+      trip, making it change to 'predicted'.
+      <p></p>
+      <div class="sortArrival layout countdown predicted">12 min</div>
+      <b>Predicted arrival</b>: there is an actual train operating associated
+      with the displayed time. The arrival time is based directly off of
+      its current position and velocity. 
+      <p></p>
+      <div class="sortArrival layout countdown approach">Approach</div>
+      <b>Approaching</b>: The train is approaching the selected station. This is
+      typically 2 minutes before it arrives.<br /><br />
+      <p></p>
+      <div class="sortArrival layout countdown arrive">Arriving</div>
+      <b>Arriving</b>: The train is about to arrive or is at the platform of
+      the selected station.<br /><br />
+      <p></p>
+      <div class="sortArrival layout countdown depart">Departing</div>
+      <b>Departing / Boarding</b>: The train is currently boarding or is about
+      to leave the selected station.
+    </div>
+    
+    <!--
+      The last hovering-div will be for the form that will basically request
+      that the page be reloaded with new parameters specified. (See the URL
+      parameters list at the comment at the top of the page here)
+    -->
+    <div id="settingsPane">
+      <h3>Configure Mass TRAC</h3>
+      <form id="mt_settings" method="GET">
+        <table>
+          <tr>
+            <td><input type="checkbox" id="cb_autoRef" name="autoRef"></td>
+            <td>
+              Automatically refresh the data (30 sec)
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" id="cb_verbose" name="verbose"></td>
+            <td>
+              Display detailed trip information<br />
+              (at the cost of organization)
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" id="cb_clocktime" name="times"></td>
+            <td>
+              Show arrivals as times (like 3:44pm)
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align : center">
+              <input type="Submit" id="btn_submit" value="Submit">
+            </td>
+            
+            <!--
+              Included this as a way to keep the name when a submit is done
+              TODO: Fix this to work a better way, if possible. This is hacky.
+            -->
+          </tr>
+          <tr>
+            <td colspan="2" style="display : none">
+              <input type="text" id="stationName" name="name">
+            </td>
+          </tr>
+        </table>
+      </form>
     </div>
     
   </body>
