@@ -46,34 +46,30 @@ Mass TRAC - Features not yet implemented
 
  Arrival Information Page
 --------------------------
-  - Settings dialog
-      + jQuery UI to make a dialog or something hidden by default. When user
-        clicks the settings icon, simply display it. We'll need cookies to
-        save these options on the users' computers!
-      + Project proposal details our desired configuration parameters.
+  - Settings dialog                                                         DONE
+      + A basic version is now done, but if more features are needed we'll
+        have to evaluate the available time.
 
-  - HTML5 Canvas showing currently-tracked train positions
-      + I think we should only attempt this with the subway lines, not the
-        Commuter Rail, which would look very uninteresting.
-      + This should be reasonably "interesting" to accomplish, but would 
-        definitely add some wow factor to the site.
+  - HTML5 Canvas showing currently-tracked train positions                  DONE
+      + Only does rapid transit lines, and as it turns out, only the last
+        known positions are reported with the lat, lon fields. It appears that
+        when a train passes a signal, it's location is recorded and that's why
+        the little position arrows don't ever display in places other than
+        around the station stops. Still, it's kind of neat.
 
   - Organization of arrival data
-      + The data-dump style currently used in the Alpha stage is somewhat
-        silly in its current form, especially where only one line serves a 
-        stations, like Harvard Square, where all the tables will show "RD".
-      + A better way to display might be to group trips to the same destination
-        under a heading, and then a simple table (or whatever, list...) with
-        the countdowns for each of them.
+      + Group-by-destination is now the default, but it's a little messy, as we
+        cannot nicely group trips that have destinations other than their
+        terminals. One option would be to process these like the Commuter Rail
+        outbound trips and just list them by time.
 
   - Automatic Data Refreshing / Updating                                    DONE
       + Make the auto refresh button trigger the timer structure to request new
         data from the servers without user intervention.
       + This still needs to reworking to operate as expected.
 
-  - COOKIES. How, what, why?
-      + Save the users settings. What settings? See the proposal.
+  - COOKIES. How, what, why?                                                OMIT
+      + As we're now past the feature freeze, whatever is done is done, the
+        focus is now in getting working what we have.
 
-... if you think of more, please just add to this file and recommit! Thanks
-
--- Dan
+-- Dan   (updated 25-Mar-2013)
