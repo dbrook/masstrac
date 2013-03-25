@@ -1,183 +1,76 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
 
-        <!--
-        File: masstrac.html
-        Dan Brook, Austin Veino, and Jivani Cassar
-        GUI II final project at UMass Lowell
-        Date Created: 2013-2-12
-        Description: A tool that displays real-time arrival countdowns for the MBTA
-        -->
+    <!--
+    File: masstrac.html
+    Dan Brook, Austin Veino, and Jivani Cassar
+    GUI II final project at UMass Lowell
+    Date Created: 2013-2-12
+    Description: A tool that displays real-time arrival countdowns for the MBTA
+    -->
 
-        <title>Mass TRAC</title>
+    <title>Mass TRAC</title>
 
-        <!-- Links the css -->
-        <link type="text/css" rel="stylesheet" href="css/black-tie/jquery-ui-1.10.1.custom.min.css">
-        <link type="text/css" rel="stylesheet" href="css/selector.css">
-        <link type="text/css" rel="stylesheet" href="css/mbta_colors.css">
+    <!-- Links the css -->
+    <link type="text/css" rel="stylesheet" href="css/black-tie/jquery-ui-1.10.1.custom.min.css">
+    <link type="text/css" rel="stylesheet" href="css/selector.css">
+    <link type="text/css" rel="stylesheet" href="css/mbta_colors.css">
 
-        <!-- 
-       Grab the JavaScript needed to make the page run
-       WARNING: It's VERY VERY important that this be done in the
-       order detailed below, as the namespace especially is setup in
-       the structures.js.
-        -->
-        <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
-        <script src="lib/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
-        <script src="lib/structures.js" type="text/javascript"></script>
-        <script src="lib/stations.js" type="text/javascript"></script>
-        <script src="lib/green.js" type="text/javascript"></script>
+    <!-- 
+   Grab the JavaScript needed to make the page run
+   WARNING: It's VERY VERY important that this be done in the
+   order detailed below, as the namespace especially is setup in
+   the structures.js.
+    -->
+    <script src="lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="lib/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <script src="lib/structures.js" type="text/javascript"></script>
+    <script src="lib/stations.js" type="text/javascript"></script>
+    <script src="lib/green.js" type="text/javascript"></script>
+    <script src="lib/selector.js" type="text/javascript"></script>
 
-        <script type="text/javascript">
-            $(function getstations() {
-                
-                /*
-                 * Define station arrays
-                 */
-                var stations = [];
-                var red_line = [];
-                var orange_line = [];
-                var blue_line = [];
-                var green_line = [];
-                var commuter =[];
-                
-                var i = 0;
-                var j = 0;
-                
-                /*
-                 * For loop to populate station arrays
-                 * stations contains all the station names
-                 * red_line contains only the red line stations
-                 * orange_line contains the orange stations ect.
-                 */
-                for (i=0; i<masstrac.stations.length; i++) {
-                    stations.push(masstrac.stations[i].name);
-                    
-                    for (j=0; j<masstrac.stations[i].svcs.length; j++) {
-                        if (masstrac.stations[i].svcs[j] == "red") {
-                            red_line.push(masstrac.stations[i].name);
-                        } else if (masstrac.stations[i].svcs[j] == "orange") {
-                            orange_line.push(masstrac.stations[i].name);
-                        } else if (masstrac.stations[i].svcs[j] == "blue") {
-                            blue_line.push(masstrac.stations[i].name);
-                        } else if (masstrac.stations[i].svcs[j] == "green") {
-                            green_line.push(masstrac.stations[i].name);
-                        } else {
-                            commuter.push(masstrac.stations[i].name);
-                            break;
-                        }
-                    }
-                }   
-                
-                /*
-                 * jQuery call to give the seach bar its autocomplete tags
-                 */
-                $( "#tags" ).autocomplete({
-                    source: stations,
-                    select: function(event, ui) {
-                        
-                        
-                        /*
-                         * See if there is a way to make these with RELATIVE links?
-                         */
+    <script type="text/javascript">
+      $(document).ready(function() {
+        getstations();
+        createAccordion();
+        map_change();
+      });
+    </script>
 
-                        window.location = 
-                            "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + ui.item.value;
-                    }
-                });
-                /*
-                 * Create vars for the lists of links that will be placed into the 
-                 * accordion content panels
-                 */
-                var redlist = $("<ul></ul>").attr('id','redlinks');
-                var orangelist = $("<ul></ul>").attr('id','orangelinks');
-                var bluelist = $("<ul></ul>").attr('id','bluelinks');
-                var greenlist = $("<ul></ul>").attr('id','greenlinks');
-                var commuterlist = $("<ul></ul>").attr('id','commuterlinks');
-            
-                /*
-                 * Loop through the reds staion list
-                 * create link for each station
-                 * append the list to the correct content panel
-                 */
-                for (i=0; i<red_line.length; i++) {
-                    redlist.append("<li><a href='arrivals.html?name=" + 
-                        red_line[i] + "'>" + red_line[i] + "</a>");
-                }
-                $("#r_content").append(redlist);
-                for (i=0; i<orange_line.length; i++) {
-                    orangelist.append("<li><a href='arrivals.html?name=" + 
-                        orange_line[i] + "'>" + orange_line[i] + "</a>");
-                }
-                $("#o_content").append(orangelist);
-            
-                for (i=0; i<blue_line.length; i++) {
-                    bluelist.append("<li><a href='arrivals.html?name=" + 
-                        blue_line[i] + "'>" + blue_line[i] + "</a>");
-                }
-                $("#b_content").append(bluelist);
-            
-                for (i=0; i<green_line.length; i++) {
-                    greenlist.append("<li><a href='arrivals.html?name=" + 
-                        green_line[i] + "'>" + green_line[i] + "</a>");
-                }
-                $("#g_content").append(greenlist);
-            
-                for (i=0; i<commuter.length; i++) {
-                    commuterlist.append("<li><a href='arrivals.html?name=" + 
-                        commuter[i] + "'>" + commuter[i] + "</a>");
-                }
-                $("#c_content").append(commuterlist);
-        
-        
-            });
-        
-        
-            /* 
-             * This fuction transforms the accordion div into an accordion using jQuery ui
-             * collapsible: true allows the accordian to be completely colapsed
-             * activ: false loads the accordion with header active
-             * heightStyle: "content" allows the content window height be unique to its content 
-             */
-            $(function() {
-                $( "#accordion" ).accordion({ collapsible: true, active: false, heightStyle: "content"});
-            });
-        </script>
-
-    </head>
-    <body>
-        <div id="container">
-            <div id="header">
-            </div>
-            <div id="body">
-	      <!-- menu holds the search bar and the accordion -->
-                <div id="menu">
-                    <div id="searchBar">
-                        <!--<label for="tags">Station Search: </label>-->
-                        <form class="form-wrapper cf">
-                            <input id="tags" type="text" placeholder="Enter your station"/>
-                            <button type="submit">Search</button>
-                        </form>
-                    </div>
-                    <div id="accordion">
-                        <h3>RED</h3>
-                        <div id="r_content"></div>
-                        <h3>ORANGE</h3>
-                        <div id="o_content"></div>
-                        <h3>BLUE</h3>
-                        <div id="b_content"></div>
-                        <h3>GREEN</h3>
-                        <div id="g_content"></div>
-                        <h3>COMMUTER RAIL</h3>
-                        <div id="c_content"></div>
-                    </div>
-                </div>
-                <div id="map">
-                  <img src="img/maps/subway-spider.jpg" width="650"></img>
-                </div>
-            </div>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+      </div>
+      <div id="body">
+        <!-- menu holds the search bar and the accordion -->
+        <div id="menu">
+          <div id="searchBar">
+            <!--<label for="tags">Station Search: </label>-->
+            <form class="form-wrapper cf">
+              <input id="tags" type="text" placeholder="Enter your station"/>
+              <button type="submit">Search</button>
+            </form>
+          </div>
+          <div id="accordion">
+            <h3 id="r_header">RED</h3>
+            <div id="r_content"></div>
+            <h3 id="o_header">ORANGE</h3>
+            <div id="o_content"></div>
+            <h3 id="b_header">BLUE</h3>
+            <div id="b_content"></div>
+            <h3 id="g_header">GREEN</h3>
+            <div id="g_content"></div>
+            <h3 id="c_header">COMMUTER RAIL</h3>
+            <div id="c_content"></div>
+          </div>
         </div>
-    </body>
+        <div id="map">
+          <img src="img/maps/subway-spider.jpg" id="map_img" width="650"/>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
