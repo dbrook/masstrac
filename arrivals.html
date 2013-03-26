@@ -291,6 +291,9 @@
         // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
         
         var stop_name = (getParameter( "name" )).split("%20").join(" ");
+      
+        // Submitting a string with a slash breaks things....
+        stop_name = stop_name.split("%2F").join("/");
         
         /*
          * The submit function likes to generate plus signs instead of %20.
