@@ -295,6 +295,10 @@
         // Submitting a string with a slash breaks things....
         stop_name = stop_name.split("%2F").join("/");
         
+        // ... as do the parentheses ( and ):
+        stop_name = stop_name.split("%28").join("(");
+        stop_name = stop_name.split("%29").join(")");
+        
         /*
          * The submit function likes to generate plus signs instead of %20.
          * So in case the above split/join missed it, here's the one with +.
