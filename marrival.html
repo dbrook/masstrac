@@ -82,19 +82,46 @@
         alert( "Invalid station name specified" );
         return;
       }
-        
+      
+      // Place the name of the station onto the page
+      $("#nameZone").html( staObj.name );
+      
+      // Assign click handler to the reload data button
+      $("#refresher").click( function () {
+        reloadData( staObj.name, sline );
+      });
+      
       // Otherwise, the station lookup was good, fetch the data
       reloadData( staObj.name, sline );
-      
 		});
 		</script>
   </head>
   <body>
     
     <header data-role="header" data-position="inline">
+      
+      <!-- 
+      LET THEM EAT... a regular link. The back button behavior on these jQuery
+      Mobile pages is insane and usually leads to a bunch of 404/NOT FOUND
+      errors when pressed, so instead, provide a back button that just goes
+      to the mobile index page. 
+      
+      (This is only a stop-gap measure)
+      -->
+      
+      <a href="mselectindex.html" data-icon="back">Selection</a>
       <h1>Arrivals</h1>
+      <a href="#" id="refresher" data-icon="refresh">Refresh</a>
     </header>
-
+    
+    <ul data-role="listview">
+      <li id="nameZone"></li>
+      <li id="timeZone"></li>
+    </ul>
+    
+    
+    <br />
+    
     <!-- Dynamic content place-holders -->
     <ul id="arrivalList" data-role="listview"></ul>
     
