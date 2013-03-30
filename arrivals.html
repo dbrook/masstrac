@@ -258,7 +258,7 @@
           auto_active = window.setInterval( reloadData , 30000 );
           $("#refreshDiv").html("Automatic Refresh Enabled");
           $("#autoRefToggle").html("<img src='img/auto-refresh.png'" + 
-            "width='42' height='42' title='Turn Automatic Refresh Off'>");
+            "width='42' height='42'>");
           
           // Disassociate the click handler if auto refresh is on
           $("#refreshDiv").unbind( "click" );
@@ -269,7 +269,7 @@
             "width='42' height='42' title='Refresh the data manually'>" + 
             " Click to Refresh");
           $("#autoRefToggle").html("<img src='img/auto-refresh-off.png'" + 
-            "width='42' height='42' title='Turn Automatic Refresh On'>");
+            "width='42' height='42'>");
           
           // Assign the reload data function to the 
           // click-handler on the refresh icon.
@@ -366,10 +366,10 @@
         // Note that there is some requisite CSS happening here, too
         
         // This is needed to KEEP the window hovered if the mouse goes into it
-        $("#disclaimShow").hover( function (event) { $("#disclaimer").toggle(); });
-        $("#disclaimer").hover( function (event) { $("#disclaimer").toggle(); });
-        $("#settingsShow").hover( function (event) { $("#settingsPane").toggle(); });
-        $("#settingsPane").hover( function (event) { $("#settingsPane").toggle(); });
+        $("#disclaimShow").click( function (event) { $("#disclaimer").toggle(); });
+        $("#settingsShow").click( function (event) { $("#settingsPane").toggle(); });
+        $("#disclaimShow").css( 'cursor', 'pointer' );
+        $("#settingsShow").css( 'cursor', 'pointer' );
         
         // Don't show alert icon by default
         $("#iconAlert").hide();
@@ -377,22 +377,11 @@
         // Force the resize handler to fire right at load time
         $(window).resize();
         
-        // Assign the toggle-able automatic-refresh to the assigned icon
-        $("#autoRefToggle").click( function () {
-          if (auto_update_flag == "on") {
-            autoUpdate( false );
-            auto_update_flag = "off";
-          } else {
-            autoUpdate( true );
-            auto_update_flag = "on";
-          }
-        });
-        
         /*
          * Try to tab-ify the supplemental content area.
          * Hide all the subway live plotting areas first.
          */
-        $("#suppContent").tabs({event: "mouseover", "disabled": [1, 2, 3]});
+        $("#suppContent").tabs({"disabled": [1, 2, 3]});
         
         /*
          * Show the bus connections (if any)

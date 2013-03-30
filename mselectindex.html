@@ -1,509 +1,98 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css"/>
-		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-		
-		<script src="lib/structures.js"></script>
-		<script src="lib/stations.js"></script>
-		<!--<script src="lib/selector.js"></script>-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!--
+      File: mselectindex.html
+      
+      Programmers:
+      Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
+      Daniel Brook, UMass Lowell student (daniel_brook@student.uml.edu)
+      Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
+      
+      Page updated by Daniel Brook on 2013-03-29 at 10:00 PM
+      
+      Description:
+      This page is the stepping-stone to the real-time arrival data, where
+      users need to select which station they want the arrival data for.
+      This can be accomplished either by direct text entry to the autocomplete
+      widget, or by "guided selection" through line names, then stations.
+    -->
+    
+    <meta content="width=device-width, minimum-scale=1, maximum-scale=1" name="viewport">
 
-		
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>New Web Project</title>
+    <!-- Pull in internal resources for populating data -->
+    <link rel="stylesheet" href="css/default/jquery.mobile-1.3.0.min.css"/>
+		<script src="lib/jquery-1.9.1.min.js"></script>
+		<script src="lib/jquery.mobile-1.3.0.min.js"></script>
+    
+    <script src="lib/structures.js" type="text/javascript"></script>
+    <script src="lib/stations.js" type="text/javascript"></script>
+    <script src="lib/mselector.js" type="text/javascript"></script>
+    
+    <title>Mass TRAC Mobile</title>
+    
 		<script>
 		$(document).ready(function(){
-			$(function getstations() {
-                
-  /*
-         * Define station arrays
-         */
-  var stations = [];
-  var red_line = [];
-  var orange_line = [];
-  var blue_line = [];
-  var green_line = [];
-  var purple_line =[];
-                
-  var i = 0;
-  var j = 0;
-                
-  /*
-         * For loop to populate station arrays
-         * stations contains all the station names
-         * red_line contains only the red line stations
-         * orange_line contains the orange stations ect.
-         */
-  for (i=0; i<masstrac.stations.length; i++) {
-    stations.push(masstrac.stations[i].name);
-                    
-    for (j=0; j<masstrac.stations[i].svcs.length; j++) {
-      if (masstrac.stations[i].svcs[j] == "red") {
-        red_line.push(masstrac.stations[i].name);
-      } else if (masstrac.stations[i].svcs[j] == "orange") {
-        orange_line.push(masstrac.stations[i].name);
-      } else if (masstrac.stations[i].svcs[j] == "blue") {
-        blue_line.push(masstrac.stations[i].name);
-      } else if (masstrac.stations[i].svcs[j] == "green") {
-        green_line.push(masstrac.stations[i].name);
-      } else {
-        purple_line.push(masstrac.stations[i].name);
-        break;
-      }
-    }
-  }   
-        
-  stations.sort();
-  red_line.sort();
-  orange_line.sort();
-  blue_line.sort();
-  green_line.sort();
-  purple_line.sort();
-        
-        
-
-  /*
-         * jQuery call to give the seach bar its autocomplete tags
-         */
-  /*
-         * Create vars for the lists of links that will be placed into the 
-         * accordion content panels
-         */
-  var redlist = $("<ul></ul>").attr('id','redlinks');
-  var orangelist = $("<ul></ul>").attr('id','orangelinks');
-  var bluelist = $("<ul></ul>").attr('id','bluelinks');
-  var greenlist = $("<ul></ul>").attr('id','greenlinks');
-  var commuterlist = $("<ul></ul>").attr('id','commuterlinks');
-            
-  /*
-         * Loop through the reds staion list
-         * create link for each station
-         * append the list to the correct content panel
-         */
-	redlist.append("<ul>");
-  for (i=0; i<red_line.length; i++) {
-    redlist.append("<li><a href='arrivals.html?name=" + 
-      red_line[i] + "'>" + red_line[i] + "</a>");
-  }
-  redlist.append("</ul>");
-  $("#r_content").append(redlist);
-  for (i=0; i<orange_line.length; i++) {
-    orangelist.append("<li><a href='arrivals.html?name=" + 
-      orange_line[i] + "'>" + orange_line[i] + "</a>");
-  }
-  $("#o_content").append(orangelist);
-            
-  for (i=0; i<blue_line.length; i++) {
-    bluelist.append("<li><a href='arrivals.html?name=" + 
-      blue_line[i] + "'>" + blue_line[i] + "</a>");
-  }
-  $("#b_content").append(bluelist);
-            
-  for (i=0; i<green_line.length; i++) {
-    greenlist.append("<li><a href='arrivals.html?name=" + 
-      green_line[i] + "'>" + green_line[i] + "</a>");
-  }
-  $("#g_content").append(greenlist);
-            
-  for (i=0; i<purple_line.length; i++) {
-    commuterlist.append("<li><a href='arrivals.html?name=" + 
-      purple_line[i] + "'>" + purple_line[i] + "</a>");
-  }
-  $("#c_content").append(commuterlist);
-        
-        
-});
+      /*
+       * Pull in all the stations from stations.js and populate the
+       * corresponding zones with them.
+       */
+      loadstations();
 		});
 		</script>
-	</head>
-	<body>
-	<input id="tags" type="text"/>
-	
-		<header data-role="header" data-position="inline">
-			<h1>Select A Station</h1>
-		</header>
-		<ul data-role="listview">
-			<li>
-				<h3>Commuter rail</h3>
-				<div id="c_content"></div>
-			</li>
-			
-			<li id="r_content">
-				<h3>Red line</h3>
-			</li>
-				
-			<li>
-				<h3>Orange line</h3>
-				<div id="o_content"></div>
-			</li>	
-				
-			<li>
-				<h3>Blue line</h3>
-				<div id="b_content"></div>
-			</li>	
-			
-			<li>
-				<h3>Green line</h3>
-				<div id="g_content"></div>
-			</li>	
-			
-			<li>
-				<h3>All stations</h3>
-				<ul data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search station list...">
-			<li>
-				<a href="#">Airport</a>
-			</li>
-			<li>
-				<a href="#">Alewife</a>
-			</li>
-			<li>
-				<a href="#">Allston Street</a>
-			</li>
-			<li>
-				<a href="#">Andrew</a>
-			</li>
-			<li>
-				<a href="#">Aquarium</a>
-			</li>
-			<li>
-				<a href="#">Arlington</a>
-			</li>
-			<li>
-				<a href="#">Ashmont</a>
-			</li>
-			<li>
-				<a href="#">Babcock Street</a>
-			</li>
-			<li>
-				<a href="#">Back Bay</a>
-			</li>
-			<li>
-				<a href="#">Back of the Hill</a>
-			</li>
-			<li>
-				<a href="#">Beachmont</a>
-			</li>
-			<li>
-				<a href="#">Beaconsfield</a>
-			</li>
-			<li>
-				<a href="#">Blandford Street</a>
-			</li>
-			<li>
-				<a href="#">Boston College</a>
-			</li>
-			<li>
-				<a href="#">Boston University Central</a>
-			</li>
-			<li>
-				<a href="#">Boston University East</a>
-			</li>
-			<li>
-				<a href="#">Boston University West</a>
-			</li>
-			<li>
-				<a href="#">Bowdoin</a>
-			</li>
-			<li>
-				<a href="#">Boylston</a>
-			</li>
-			<li>
-				<a href="#">Braintree</a>
-			</li>
-			<li>
-				<a href="#">Brandon Hall</a>
-			</li>
-			<li>
-				<a href="#">Brigham Circle</a>
-			</li>
-			<li>
-				<a href="#">Broadway</a>
-			</li>
-			<li>
-				<a href="#">Brookline Hills</a>
-			</li>
-			<li>
-				<a href="#">Brookline Village</a>
-			</li>
-			<li>
-				<a href="#">Central</a>
-			</li>
-			<li>
-				<a href="#">Central Ave</a>
-			</li>
-			<li>
-				<a href="#">Charles/MGH</a>
-			</li>
-			<li>
-				<a href="#">Chestnut Hill</a>
-			</li>
-			<li>
-				<a href="#">Chestnut Hill Ave</a>
-			</li>
-			<li>
-				<a href="#">Chinatown</a>
-			</li>
-			<li>
-				<a href="#">Chiswick Road</a>
-			</li>
-			<li>
-				<a href="#">Cleveland Circle</a>
-			</li>
-			<li>
-				<a href="#">Community College</a>
-			</li>
-			<li>
-				<a href="#">Coolidge Corner</a>
-			</li>
-			<li>
-				<a href="#">Copley</a>
-			</li>
-			<li>
-				<a href="#">Davis</a>
-			</li>
-			<li>
-				<a href="#">Dean Road</a>
-			</li>
-			<li>
-				<a href="#">Downtown Crossing</a>
-			</li>
-			<li>
-				<a href="#">Eliot</a>
-			</li>
-			<li>
-				<a href="#">Englewood Ave</a>
-			</li>
-			<li>
-				<a href="#">Fairbanks</a>
-			</li>
-			<li>
-				<a href="#">Fenway</a>
-			</li>
-			<li>
-				<a href="#">Fenway Road</a>
-			</li>
-			<li>
-				<a href="#">Fields Corner</a>
-			</li>
-			<li>
-				<a href="#">Forrest Hills</a>
-			</li>
-			<li>
-				<a href="#">Government Center</a>
-			</li>
-			<li>
-				<a href="#">Green Street</a>
-			</li>
-			<li>
-				<a href="#">Griggs Street/Long Ave</a>
-			</li>
-			<li>
-				<a href="#">Harvard</a>
-			</li>
-			<li>
-				<a href="#">Harvard Ave</a>
-			</li>
-			<li>
-				<a href="#">Hawes Street</a>
-			</li>
-			<li>
-				<a href="#">Haymarket</a>
-			</li>
-			<li>
-				<a href="#">Heath Street</a>
-			</li>
-			<li>
-				<a href="#">Herald Street</a>
-			</li>
-			<li>
-				<a href="#">Hynes Convention Center</a>
-			</li>
-			<li>
-				<a href="#">Jackson Square</a>
-			</li>
-			<li>
-				<a href="#">JFK/UMass</a>
-			</li>
-			<li>
-				<a href="#">Kendall/MIT</a>
-			</li>
-			<li>
-				<a href="#">Kenmore</a>
-			</li>
-			<li>
-				<a href="#">Kent Street</a>
-			</li>
-			<li>
-				<a href="#">Lechmere</a>
-			</li>
-			<li>
-				<a href="#">Longwood</a>
-			</li>
-			<li>
-				<a href="#">Longwood Medical Area</a>
-			</li>
-			<li>
-				<a href="#">Malden Center</a>
-			</li>
-			<li>
-				<a href="#">Massachusetts Ave</a>
-			</li>
-			<li>
-				<a href="#">Maverick</a>
-			</li>
-			<li>
-				<a href="#">Mission Park</a>
-			</li>
-			<li>
-				<a href="#">Museum of Fine Arts</a>
-			</li>
-			<li>
-				<a href="#">Newton Center</a>
-			</li>
-			<li>
-				<a href="#">Newton Highlands</a>
-			</li>
-			<li>
-				<a href="#">North Quincy</a>
-			</li>
-			<li>
-				<a href="#">North Station</a>
-			</li>
-			<li>
-				<a href="#">Northeastern University</a>
-			</li>
-			<li>
-				<a href="#">Oak Grove</a>
-			</li>
-			<li>
-				<a href="#">Orient Heights</a>
-			</li>
-			<li>
-				<a href="#">Packard's Corner</a>
-			</li>
-			<li>
-				<a href="#">Park Street</a>
-			</li>
-			<li>
-				<a href="#">Pleasant Street</a>
-			</li>
-			<li>
-				<a href="#">Porter</a>
-			</li>
-			<li>
-				<a href="#">Prudential</a>
-			</li>
-			<li>
-				<a href="#">Quincy Adams</a>
-			</li>
-			<li>
-				<a href="#">Reservoir</a>
-			</li>
-			<li>
-				<a href="#">Revere Beach</a>
-			</li>
-			<li>
-				<a href="#">Riverside</a>
-			</li>
-			<li>
-				<a href="#">Riverway</a>
-			</li>
-			<li>
-				<a href="#">Roxbury Crossing</a>
-			</li>
-			<li>
-				<a href="#">Ruggles</a>
-			</li>
-			<li>
-				<a href="#">Savin Hill</a>
-			</li>
-			<li>
-				<a href="#">Science Park</a>
-			</li>
-			<li>
-				<a href="#">Shawmut</a>
-			</li>
-			<li>
-				<a href="#">South Station</a>
-			</li>
-			<li>
-				<a href="#">South Street</a>
-			</li>
-			<li>
-				<a href="#">St. Marys Street</a>
-			</li>
-			<li>
-				<a href="#">St. Paul Street</a>
-			</li>
-			<li>
-				<a href="#">State</a>
-			</li>
-			<li>
-				<a href="#">Stony Brook</a>
-			</li>
-			<li>
-				<a href="#">Suffolk Downs</a>
-			</li>
-			<li>
-				<a href="#">Sullivan Square</a>
-			</li>
-			<li>
-				<a href="#">Summit Ave</a>
-			</li>
-			<li>
-				<a href="#">Sutherland Street</a>
-			</li>
-			<li>
-				<a href="#">Symphony</a>
-			</li>
-			<li>
-				<a href="#">Tappan Street</a>
-			</li>
-			<li>
-				<a href="#">Tufts Medical Center</a>
-			</li>
-			<li>
-				<a href="#">Valley Road</a>
-			</li>
-			<li>
-				<a href="#">Waban</a>
-			</li>
-			<li>
-				<a href="#">Warren Street</a>
-			</li>
-			<li>
-				<a href="#">Washington Square</a>
-			</li>
-			<li>
-				<a href="#">Washington Street</a>
-			</li>
-			<li>
-				<a href="#">Wellington</a>
-			</li>
-			<li>
-				<a href="#">Wollaston</a>
-			</li>
-			<li>
-				<a href="#">Wonderland</a>
-			</li>
-			<li>
-				<a href="#">Wood Island</a>
-			</li>
-			<li>
-				<a href="#">Woodland</a>
-			</li>
-			</ul>
-			</li>
-		</ul>
-		<footer data-role="footer" data-position="inline">
-			<div data-role="controlgroup" data-type="horizontal">
-			<a href="#" data-role="button" data-icon="back" data-inline="true">back</a>
-			<a href="#" data-role="button" data-icon="refresh" data-inline="true">refresh</a>
-			<a href="#" data-role="button" data-icon="alert" data-inline="true">alert</a>
-			<a href="#" data-role="button" data-icon="info" data-transition="flip" data-inline="true">info</a>
-			</div>
-		</footer>
-	</body>
+  </head>
+  <body>
+    <header data-role="header" data-position="inline">
+      <h1>Select Station</h1>
+    </header>
+    
+    <!-- 
+    Where the top-level selections (lines) will show up.
+    Apparently, while it's not impossible to add back buttons to the sub list
+    headers, as a general rule, the jQ-M back button is buggy.
+    
+    http://stackoverflow.com/questions/6522106/jquery-mobile-nested-list-back-button-gone
+    -->
+    <ul data-role="listview">
+      <li>
+        <h3>Search Stations</h3>
+        <ul id="allSta" data-filter="true"></ul>
+      </li>
+      <li>
+        <h3>Red Line</h3>
+        <ul id="r_content"></ul>
+      </li>
+      <li>
+        <h3>Orange Line</h3>
+        <ul id="o_content"></ul>
+      </li>
+      <li>
+        <h3>Blue Line</h3>
+        <ul id="b_content"></ul>
+      </li>
+      <li>
+        <h3>Green Line</h3>
+        <ul id="g_content"></ul>
+      </li>
+      <li>
+        <h3>Commuter Rail</h3>
+        <ul id="c_content"></ul>
+      </li>
+    </ul>
+    
+    <!-- 
+    Placeholder for navi elements.
+    ** These will probably be more appropriate for the arrival page?
+    
+    <footer data-role="footer" data-position="inline">
+      <div data-role="controlgroup" data-type="horizontal">
+        <a href="#" data-role="button" data-icon="back" data-inline="true">back</a>
+        <a href="#" data-role="button" data-icon="refresh" data-inline="true">refresh</a>
+        <a href="#" data-role="button" data-icon="alert" data-inline="true">alert</a>
+        <a href="#" data-role="button" data-icon="info" data-transition="flip" data-inline="true">info</a>
+      </div>
+    </footer>
+    -->
+  </body>
 </html>
