@@ -43,8 +43,12 @@
     
     <title>Mass TRAC Mobile</title>
     
-		<script>
-		$(document).ready( function() {
+    <script>
+    $(document).ready( function() {
+      
+      // Stop the ajax navigation which horribly breaks the back button here
+      $.mobile.ajaxEnabled = false;
+      
       /*
        * Before doing much else with the page, we need to determine how much
        * information is present. If the URL has the line parameter, then
@@ -93,8 +97,8 @@
       
       // Otherwise, the station lookup was good, fetch the data
       reloadData( staObj.name, sline );
-		});
-		</script>
+    });
+  </script>
   </head>
   <body>
     
@@ -109,7 +113,7 @@
       (This is only a stop-gap measure)
       -->
       
-      <a href="mselectindex.html" data-icon="back">Selection</a>
+      <a href="mselectindex.html" data-ajax="false" data-icon="back">Selection</a>
       <h1>Arrivals</h1>
       <a href="#" id="refresher" data-icon="refresh">Refresh</a>
     </header>
