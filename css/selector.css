@@ -6,232 +6,300 @@
  * Page updated by Dan Brook on 25-Feb-2013...
  * Realigned autocomplete bar, and accordion sizes
  * Added background image to header area.
- */
+*/
 
 
 body {
-    background-image: url('../img/honey_im_subtle.png');
+  background-image: url('../img/honey_im_subtle.png');
 }
 
 /* Div that contains the whole page (rest of the divs) */
 #container
 {
-    width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Header div */
 #header
 {
-    height: 150px;
-    border-style: solid;
-    border-width: 10px;
-    background-image: url('../img/BFPBannerDone.png');
+  height: 150px;
+  border-style: solid;
+  border-width: 10px;
+  background-image: url('../img/BFPBannerDone.png');
 }
 
 
 /* contains the search bar and accordion divs */
 #menu
 {
-    width: 340px;
-    /*margin-right: 4px;*/
-    /*border: solid;*/
-    float: left;
+  width: 340px;
+  /*margin-right: 4px;*/
+  /*border: solid;*/
+  float: left;
 }
 
 /* Div for search bar */
 #searchBar
 {
-    width: 340px;
+  width: 340px;
 }
 
 /* Div for accordion */
 #accordion
 {
-    width: 340px;
-    height: 570px;
-    overflow-y: scroll;  /* Only scroll in y-direction */
+  width: 340px;
+  height: 570px;
+  overflow-y: scroll;  /* Only scroll in y-direction */
 }
 
 /* Div for the map */
 #map
 {
-    float: right;
-    width: 650px;
-    margin-top: 10px;
-    /*border: solid;*/
+  float: right;
+  width: 650px;
+  margin-top: 10px;
+  /*border: solid;*/
 }
 
 /* The headers in the accordion */
 #accordion h3
 {
-    /*height: 50px;*/
-    font-size: 1.5em;
-    /*margin: 5px auto 5px auto;*/
+  /*height: 50px;*/
+  font-size: 1.5em;
+  /*margin: 5px auto 5px auto;*/
 }
 
 /* The styling for the content in the accordion */
 .ui-accordion-content
 {
-    overflow: visible;
-    
+  overflow: visible;
+
 }
+
+/* I found a cool list style implementation here
+   http://designshack.net/articles/css/5-simple-and-practical-css-list-styles-you-can-copy-and-paste/
+   Then I modified it to what I wanted
+   The list content should now be highlighted with the same color as the line it is in 
+*/
+
+/* List styling for the content of accordion */
+ul
+{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  border-bottom: 1px solid #ccc;
+}
+li:last-child {
+  border: none;
+}
+
+li a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  width: 200px;
+ 
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+}
+
+
+/* hover over changes */
+.ui-accordion-content:first-of-type li a:hover
+{
+  background-color: #C80000;
+  color: white;
+}
+
+.ui-accordion-content:nth-of-type(2) li a:hover
+{
+  background-color: #FE6700;
+  color: white;
+}
+
+.ui-accordion-content:nth-of-type(3) li a:hover
+{
+  background-color: #00009C;
+  color: white;
+}
+
+.ui-accordion-content:nth-of-type(4) li a:hover
+{
+  background-color: #11773C;
+  color: white;
+}
+
+.ui-accordion-content:last-of-type li a:hover
+{
+  background-color: #B60EA0;
+  color: white;
+}
+
 
 /* Red Line Header */
 .ui-accordion-header:first-of-type
 {
-    background: none;
-    background-color: #C80000;
+  background: none;
+  background-color: #C80000;
 }
 
 /* Orange Line Header */
 .ui-accordion-header:nth-of-type(2)
 {
-    background: none;
-    background-color: #FE6700;
+  background: none;
+  background-color: #FE6700;
 }
 
 /* Blue Line Header */
 .ui-accordion-header:nth-of-type(3)
 {
-    background: none;
-    background-color: #00009C;
+  background: none;
+  background-color: #00009C;
 }
 
 /* Green Line Header */
 .ui-accordion-header:nth-of-type(4)
 {
-    background: none;
-    background-color: #11773C;
+  background: none;
+  background-color: #11773C;
 }
 
 /* Commuter Rail Header */
 .ui-accordion-header:last-of-type
 {
-    background: none;
-    background-color: #B60EA0;
-    
+  background: none;
+  background-color: #B60EA0;
+
 }
 
 /* The active header */
 .ui-accordion-header-active
 {
-    color: white;
+  color: white;
 }
 
 
 
 /* Search Bar Styling */
 .cf:before, .cf:after{
-    content:"";
-    display:table;
+  content:"";
+  display:table;
 }
- 
+
 .cf:after{
-    clear:both;
+  clear:both;
 }
- 
+
 .cf{
-    zoom:1;
+  zoom:1;
 }    
 
 /* Form wrapper styling */
 .form-wrapper {
-    width: 310px;
-    padding: 15px;
-    margin: 10px auto 5px auto;
-    background: #444;
-    background: rgba(0,0,0,.2);
-    border-radius: 10px;
-    box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
+  width: 310px;
+  padding: 15px;
+  margin: 10px auto 5px auto;
+  background: #444;
+  background: rgba(0,0,0,.2);
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
 }
- 
+
 /* Form text input */
- 
+
 .form-wrapper input {
-    width: 190px;
-    height: 20px;
-    padding: 10px 5px;
-    float: left;    
-    font: bold 15px 'lucida sans', 'trebuchet MS', 'Tahoma';
-    border: 0;
-    background: #eee;
-    border-radius: 3px 0 0 3px;      
+  width: 190px;
+  height: 20px;
+  padding: 10px 5px;
+  float: left;    
+  font: bold 15px 'lucida sans', 'trebuchet MS', 'Tahoma';
+  border: 0;
+  background: #eee;
+  border-radius: 3px 0 0 3px;      
 }
- 
+
 .form-wrapper input:focus {
-    outline: 0;
-    background: #fff;
-    box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+  outline: 0;
+  background: #fff;
+  box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
 }
- 
+
 .form-wrapper input::-webkit-input-placeholder {
-   color: #999;
-   font-weight: normal;
-   font-style: italic;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
 }
- 
+
 .form-wrapper input:-moz-placeholder {
-    color: #999;
-    font-weight: normal;
-    font-style: italic;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
 }
- 
+
 .form-wrapper input:-ms-input-placeholder {
-    color: #999;
-    font-weight: normal;
-    font-style: italic;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
 }    
- 
+
 /* Form submit button */
 .form-wrapper button {
-    overflow: visible;
-    position: relative;
-    float: right;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    height: 40px;
-    width: 110px;
-    font: bold 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
-    color: #fff;
-    text-transform: uppercase;
-    background: #d83c3c;
-    border-radius: 0 3px 3px 0;      
-    text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+  overflow: visible;
+  position: relative;
+  float: right;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  height: 40px;
+  width: 110px;
+  font: bold 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
+  color: #fff;
+  text-transform: uppercase;
+  background: #d83c3c;
+  border-radius: 0 3px 3px 0;      
+  text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
 }   
-   
+
 .form-wrapper button:hover{     
-    background: #e54040;
+  background: #e54040;
 }   
-   
+
 .form-wrapper button:active,
 .form-wrapper button:focus{   
-    background: #c42f2f;
-    outline: 0;   
+  background: #c42f2f;
+  outline: 0;   
 }
- 
+
 .form-wrapper button:before { /* left arrow */
-    content: '';
-    position: absolute;
-    border-width: 8px 8px 8px 0;
-    border-style: solid solid solid none;
-    border-color: transparent #d83c3c transparent;
-    top: 12px;
-    left: -6px;
+  content: '';
+  position: absolute;
+  border-width: 8px 8px 8px 0;
+  border-style: solid solid solid none;
+  border-color: transparent #d83c3c transparent;
+  top: 12px;
+  left: -6px;
 }
- 
+
 .form-wrapper button:hover:before{
-    border-right-color: #e54040;
+  border-right-color: #e54040;
 }
- 
+
 .form-wrapper button:focus:before,
 .form-wrapper button:active:before{
-        border-right-color: #c42f2f;
+  border-right-color: #c42f2f;
 }      
- 
+
 .form-wrapper button::-moz-focus-inner { /* remove extra button spacing for Mozilla Firefox */
-    border: 0;
-    padding: 0;
+  border: 0;
+  padding: 0;
 }    
