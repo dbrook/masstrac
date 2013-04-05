@@ -88,8 +88,9 @@
     <script src="lib/green.js" type="text/javascript"></script>
     <script src="lib/datagetter.js" type="text/javascript"></script>
     <script src="lib/ui.js" type="text/javascript"></script>
+<!--
     <script src="lib/canvops.js" type="text/javascript"></script>
-    
+-->    
     <!--
       When ready, start requesting the arrival data.
     -->
@@ -176,15 +177,19 @@
         }
         
         /*
-         * Now see if the alert data needs to even be shown
+         * Changed to always display the alerts tab.
+         * When no alerts are present, the "Service Alerts" will still
+         * be rendered, but the containing text will just be there to
+         * say it's empty.
          */
         if (masstrac.alerts.length > 0) {
           displayAlerts();
-          $("#iconAlert").show();
-          $("#suppContent").tabs("enable", 0);
+//          $("#iconAlert").show();
+//          $("#suppContent").tabs("enable", 0);
         } else {
-          $("#iconAlert").hide();
-          $("#suppContent").tabs("disable", 0);
+            $("#alertsArea").html("There are no alerts to display, so have a nice trip!");
+//          $("#iconAlert").hide();
+//          $("#suppContent").tabs("disable", 0);
         }
 
         /*
@@ -192,6 +197,7 @@
          * need the base map of the lines themselves. Additionally, erasing the
          * previous content of the canvas will prevent any strange artifacts.
          */
+/*
         for (var line = 0; line < staObj.svcs.length; line++) {
           switch (staObj.svcs[line]) {
             case "orange":
@@ -213,7 +219,7 @@
               break;
           }
         }
-
+*/
         // Put the refresh div back with the new time
         // Apparently constructing time stamps is a total pain, but this
         // the most likely to work across browsers.
@@ -371,9 +377,6 @@
         $("#disclaimShow").css( 'cursor', 'pointer' );
         $("#settingsShow").css( 'cursor', 'pointer' );
         
-        // Don't show alert icon by default
-        $("#iconAlert").hide();
-        
         // Force the resize handler to fire right at load time
         $(window).resize();
         
@@ -388,9 +391,11 @@
          */
         if (staObj.bus.length > 0) {
           displayBus( staObj );
-          $("#suppContent").tabs("enable", 4);
+//          $("#suppContent").tabs("enable", 4);
         } else {
-          $("#suppContent").tabs("disable", 4);
+//          $("#suppContent").tabs("disable", 4);
+          $("#busArea").html("There are no available MBTA bus connections at this station." +
+                             " Service may be available from a local transit authority.");
         }
         
         for (var line = 0; line < staObj.svcs.length; line++) {
@@ -455,7 +460,6 @@
        - Title bar with Mass TRAC logo / name on the left
        - Manual refresh button w/ Time of last refresh next to it
        - On the right, have a series of status icons:
-          - Alerts exist indicator icon
           - Automatic refresh mode indicator
        - And finally a settings button
     
@@ -473,10 +477,6 @@
       <!-- These are in their own DIV so they'll group together and
            be arranged as said group, preventing a weird "scattered" look -->
       <div>
-        <div id="iconAlert">
-          <img src="img/alert.png" width="42" height="42"
-               title="Alerts / Advisories are impacting service">
-        </div>
         <div id="autoRefToggle"></div>
         <div id="disclaimShow">
           <img src="img/helpabout.png" width="42" height="42">
@@ -518,22 +518,34 @@
         </ul>
         <div id="alertsArea"></div>
         <div id="liveRed">
-          <p>Last Known Red Line Train Positions</p>
+          <p>Red Line Train Positions not yet implemented</p>
+          <img src="img/red_strip.png"
+               height="525" width="475">
+<!--
           <canvas id="redPlot" width="475" height="475">
             Sorry, you're browser doesn't support HTML5's canvas widget. 
           </canvas>
+-->
         </div>
         <div id="liveOrange">
-          <p>Last Known Orange Line Train Positions</p>
+          <p>Orange Line Train Positions not yet implemented</p>
+          <img src="img/orange_strip.png"
+               height="525" width="475">
+<!--
           <canvas id="orangePlot" width="475" height="475">
             Sorry, you're browser doesn't support HTML5's canvas widget.
           </canvas>
+-->
         </div>
         <div id="liveBlue">
-          <p>Last Known Blue Line Train Positions</p>
+          <p>Blue Line Train Positions not yet implemented</p>
+          <img src="img/blue_strip.png"
+               height="525" width="475">
+<!--
           <canvas id="bluePlot" width="475" height="475">
             Sorry, you're browser doesn't support HTML5's canvas widget.
-        </canvas>
+          </canvas>
+-->
         </div>
         <div id="busArea"></div>
       </div>
@@ -551,35 +563,25 @@
         on experimental data and are offered "as-is" without any guarantee of
         accuracy.
       </p>
-      <h3>What am I looking at, here?</h3>
+      <h3>What data is displayed?</h3>
       <p>
         Estimated arrival times appear in the left side of the window. Each one
         is associated with a train which is heading towards the listed 
-        destination. The times are simply predictions as to how long you'll 
-        have to wait for trains (headed towards those destinations) to arrive
-        at the station you selected.
+        destination. The times listed are predictions as to how long you'll 
+        have to wait for each of these trains to arrive
+        at the station you have selected.
       </p>
-      <p>
-        To the right side of the window, the content is a little more dynamic,
-        based on the station you are viewing as well as the state of the transit
-        system. At most, you'll see: an alerts tab which shows the service alerts
-        which pertain to the station, plots of the last-known subway positions,
-        and connecting bus routes at the station. Some stations will have none
-        of this information, so don't be alarmed if nothing appears there, 
-        especially for far-flung Commuter Rail stops.
-      </p>
-      <h3>What do the colors all mean?</h3>
+      <h3>What do the colors indicate?</h3>
       <p>
         The color scheme was designed to communicate information easily for
         users as they become comfortable with the concept of Mass TRAC. Here's
         what they all mean:
       </p>
       <div class="sortArrival layout countdown scheduled">16 min</div>
-      <b>Scheduled arrival</b>: there is no physical train associated with the listed
-      arrival time but there soon will be (or the tracking device was off, or
-      it's a phantom trip that won't actually happen (these do exist)). This
+      <b>Scheduled arrival</b>: there is no actual train associated with the listed
+      arrival time but there soon will be. This
       is more common towards the ends of the lines, where a train is likely
-      heading towards the terminal to turn around and will soon "become" the
+      heading towards the terminal to turn around and will soon become the
       trip, making it change to 'predicted'.
       <p></p>
       <div class="sortArrival layout countdown predicted">12 min</div>
@@ -596,7 +598,7 @@
       the selected station.<br /><br />
       <p></p>
       <div class="sortArrival layout countdown depart">Departing</div>
-      <b>Departing / Boarding</b>: The train is currently boarding or is about
+      <b>Departing / Boarding</b>: The train is currently stopped and about
       to leave the selected station.
     </div>
     
