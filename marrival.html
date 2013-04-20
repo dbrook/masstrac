@@ -135,33 +135,12 @@
       <h1>Arrivals at</h1>
       <a id="refresher" data-icon="refresh">Refresh</a>
     </header>
-    
-    <div id="arrivalDiv">
-      <ul data-role="listview">
-        <li id="nameZone"></li>
-        <li id="timeZone"></li>
-      </ul>
-      <br />
-        
-      <!-- 
-        Dynamic content place-holders
-        Unfortunately the listview leaves some organization abilities out, so
-        here we're doing something a little atypical by attempting to embed
-        format-less tables within the li elements to separate status from the
-        destination and train numbers.
-      -->
-      <ul data-role="listview">
-        <li>
-          <table><tr>
-              <td>Train To...</td>
-              <td>Here in... / Is...</td>
-            </tr></table>
-        </li>
-      </ul>
-      <ul id="arrivalList" data-role="listview"></ul>
-    </div>
-    <br />
-    
+
+    <ul data-role="listview">
+      <li id="nameZone"></li>
+      <li id="timeZone"></li>
+    </ul>
+
     <!--
       The alert feed will be in a collabsible so users can clearly see if
       an alert is present, but not have it get in the way of the arrival feed
@@ -171,6 +150,23 @@
       <ul data-role="listview" id="mAlertsList">
       </ul>
     </div>
+
+    <!-- 
+      Dynamic content place-holders
+      Unfortunately the listview leaves some organization abilities out, so
+      here we're doing something a little atypical by attempting to embed
+      format-less tables within the li elements to separate status from the
+      destination and train numbers.
+    -->
+    <ul data-role="listview" data-theme="b">
+      <li>
+        <table><tr>
+            <td>Train To...</td>
+            <td>Here in... / Is...</td>
+          </tr></table>
+      </li>
+    </ul>
+    <ul id="arrivalList" data-role="listview"></ul>
   </body>
 </html>
   
