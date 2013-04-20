@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!--
+      File: mhelp.html
+      
+      Programmers:
+      Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
+      Daniel Brook, UMass Lowell student (daniel_brook@student.uml.edu)
+      Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
+      
+      Page updated by Daniel Brook on 2013-04-20 at 1:15 PM
+      
+      Description:
+      A simple static help page for first-time users of the mobile interface
+    -->
+    
+    <meta content="width=device-width, minimum-scale=1, maximum-scale=1" name="viewport">
+
+    <!-- Pull in internal resources for populating data -->
+    <link rel="stylesheet" href="css/default/jquery.mobile-1.3.0.min.css"/>
+		<script src="lib/jquery-1.9.1.min.js"></script>
+		<script src="lib/jquery.mobile-1.3.0.min.js"></script>
+    
+    <title>Mass TRAC Line Selection</title>
+    
+  </head>
+  <body>
+    <header data-role="header" data-position="inline">
+      <h1>Mass TRAC Help</h1>
+    </header>
+    <div data-role="content">
+      <h3>Data Overview</h3>
+      <p>
+        All of the arrival times are all calculated by the data provider (the
+        MBTA and MassDOT), and Mass TRAC renders it in a more human-readable 
+        form. <b>MassDOT, the MBTA, and the Mass TRAC authors are not
+        responsible</b> for any inaccuracies or issues that arise because of 
+        inaccuracies with the live data (read below for known bugs).
+      </p>
+      <p>
+        The data being displayed is quite simple. When you see a time 
+        listed next to a destination, it indicates how long you 
+        can expect to wait for a train <b>going towards that destination</b> to
+        show up <b>at the station you selected</b>. Fresh data can be fetched
+        manually by pressing the &quot;Refresh&quot; button.
+      </p>
+      <p>
+        Any service alerts found that affect the lines that stop at the 
+        station selected are also rendered and counted for your convenience.
+        Additionally, if you click one of the trips, you can see all the
+        associated predictions with it (how long it will take to run its route)!
+      </p>
+      <h3>The times in (parentheses)</h3>
+      <p>
+        Due to the smaller screens on mobile devices, certain shortcuts were
+        taken to provide information in a clearer manner. The result of this is
+        that the distinction between a <b>predicted trip</b> (one that's already 
+        running) and a <b>scheduled trip</b> (generally one that hasn't gotten 
+        to the end of the line and turned around yet) is 
+        denoted with the countdown times in parentheses.
+      </p>
+      <h3>Known Bugs</h3>
+      <p>
+        As we've developed Mass TRAC and tested data against it, we've come 
+        across some strange (and sometimes persistent) bugs that could affect
+        the usefulness of the tool. Below are the biggest ones we've found.
+      </p>
+      <ul>
+        <li>
+          <b>Weekend Commuter Rail Data: </b>
+          The MBTA data feed seems to get polluted (mostly on weekends) with
+          phantom weekday trips that will obviously never come by. That's why
+          we print the Train # on Commuter Rail trips!
+        </li>
+        <li>
+          <b>Loss of Tracking Data: </b>
+          On the Commuter Rail feeds, trips will sometimes lose their tracking
+          data (which includes the real-time position and other information), 
+          which takes it from predicted mode to scheduled mode and back again.
+          This reverts the times to whatever was printed on the schedule and 
+          thus won't (necessarily) reflect reality.
+        </li>
+        <li>
+          <b>Feed Resilience: </b>
+          Things happen, sometimes the tracking data feeds disappear for a few
+          minutes here and there. If one is encountered, Mass TRAC will tell 
+          you.
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

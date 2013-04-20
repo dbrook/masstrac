@@ -13,10 +13,8 @@
       Page updated by Daniel Brook on 2013-03-30 at 9:00 AM
       
       Description:
-      This page is the stepping-stone to the real-time arrival data, where
-      users need to select which station they want the arrival data for.
-      This can be accomplished either by direct text entry to the autocomplete
-      widget, or by "guided selection" through line names, then stations.
+      This page is used to select a line, forwarding users to the station 
+      selection for the entire line (on the mselectstation.html page).
     -->
     
     <meta content="width=device-width, minimum-scale=1, maximum-scale=1" name="viewport">
@@ -30,118 +28,75 @@
     <script src="lib/stations.js" type="text/javascript"></script>
     <script src="lib/mselector.js" type="text/javascript"></script>
     
-    <title>Mass TRAC Mobile</title>
-    
     <script>
-      $(document).ready(function(){
-      /*
-       * Pull in all the stations from stations.js and populate the
-       * corresponding zones with them.
-       */
-      loadstations();
-    });
+      $(document).ready( function () {
+//        populateAllStations();
+      });
     </script>
+    
+    <title>Mass TRAC Line Selection</title>
+    
   </head>
   <body>
     <header data-role="header" data-position="inline">
-      <h1>Find Station</h1>
+      <h1>Choose Station</h1>
     </header>
     
-    <!-- 
-    Where the top-level selections (lines) will show up.
-    Apparently, while it's not impossible to add back buttons to the sub list
-    headers, as a general rule, the jQ-M back button is buggy.
-    
-    http://stackoverflow.com/questions/6522106/jquery-mobile-nested-list-back-button-gone
+    <!--
+      The jQuery UI Mobile way of doing an autocomplete... this is the
+      "filter reveal" way that will expand as matches are found to what 
+      users have typed into it. (This is populated by the mselector.js file)
     -->
-    <ul data-role="listview">
-      <li style="display : none">
-        <h3>Search Stations</h3>
-        <ul id="allSta" data-filter="true"></ul>
-      </li>
-      <li>
-        <h3>Red Line</h3>
-        <ul id="r_content"></ul>
-      </li>
-      <li>
-        <h3>Orange Line</h3>
-        <ul id="o_content"></ul>
-      </li>
-      <li>
-        <h3>Blue Line</h3>
-        <ul id="b_content"></ul>
-      </li>
-      <li>
-        <h3>Green Line</h3>
-        <ul id="g_content"></ul>
-      </li>
-      <li>
-        <h3>Commuter Rail</h3>
-        <ul id="c_content">
-          <li>
-            <h4>Fitchburg / South Acton Line</h4>
-            <ul id="fitchburg_cont"></ul>
-          </li>
-          <li>
-            <h4>Haverhill / Reading Line</h4>
-            <ul id="haverhill_cont"></ul>
-          </li>
-          <li>
-            <h4>Providence / Stoughton Line</h4>
-            <ul id="prov_stough_cont"></ul>
-          </li>
-          <li>
-            <h4>Framingham / Worcester Line</h4>
-            <ul id="worcester_cont"></ul>
-          </li>
-          <li>
-            <h4>Needham Line</h4>
-            <ul id="needham_cont"></ul>
-          </li>
-          <li>
-            <h4>Franklin Line</h4>
-            <ul id="franklin_cont"></ul>
-          </li>
-          <li>
-            <h4>Kingston / Plymouth Line</h4>
-            <ul id="king_plym_cont"></ul>
-          </li>
-          <li>
-            <h4>Middleborough / Lakeville Line</h4>
-            <ul id="middleborough_cont"></ul>
-          </li>
-          <li>
-            <h4>Greenbush Line</h4>
-            <ul id="greenbush_cont"></ul>
-          </li>
-          <li>
-            <h4>Fairmount Line</h4>
-            <ul id="fairmount_cont"></ul>
-          </li>
-          <li>
-            <h4>Newburyport / Rockport Line</h4>
-            <ul id="newb_rock_cont"></ul>
-          </li>
-          <li>
-            <h4>Lowell Line</h4>
-            <ul id="lowell_cont"></ul>
-          </li>
-        </ul>
-      </li>
+    <!--
+    <br/>
+    <ul id="allStaNames"
+        data-role="listview" data-filter="true" data-filter-reveal="true"
+        data-filter-placeholder="Search Stations by Name..." data-inset="true">
     </ul>
-    
-    <!-- 
-    Placeholder for navi elements.
-    ** These will probably be more appropriate for the arrival page?
-    
-    <footer data-role="footer" data-position="inline">
-      <div data-role="controlgroup" data-type="horizontal">
-        <a href="#" data-role="button" data-icon="back" data-inline="true">back</a>
-        <a href="#" data-role="button" data-icon="refresh" data-inline="true">refresh</a>
-        <a href="#" data-role="button" data-icon="alert" data-inline="true">alert</a>
-        <a href="#" data-role="button" data-icon="info" data-transition="flip" data-inline="true">info</a>
-      </div>
-    </footer>
+    <br/>
     -->
+    <!--
+      Directed Line - then - station selection method...
+    -->
+    <div data-role="content">
+      Which MBTA line are you waiting for?
+    </div>
+    
+    <ul data-role="listview">
+      <li data-role="list-divider"><h2>Rapid Transit (Subway) Lines</h2></li>
+      <li><a href="mselectstation.html?line=red" data-ajax="false">
+          <h3>Red Line</h3></a></li>
+      <li><a href="mselectstation.html?line=orange" data-ajax="false">
+          <h3>Orange Line</h3></a></li>
+      <li><a href="mselectstation.html?line=blue" data-ajax="false">
+          <h3>Blue Line</h3></a></li>
+      <li><a href="mselectstation.html?line=green" data-ajax="false">
+          <h3>Green Line</h3></a></li>
+      <li data-role="list-divider"><h2>Commuter Rail Lines</h2></li>
+      <li><a href="mselectstation.html?line=fairmount" data-ajax="false">
+          <h3>Fairmount Line</h3></a></li>
+      <li><a href="mselectstation.html?line=franklin" data-ajax="false">
+          <h3>Franklin Line</h3></a></li>
+      <li><a href="mselectstation.html?line=fitchburg" data-ajax="false">
+          <h3>Fitchburg / South Acton Line</h3></a></li>
+      <li><a href="mselectstation.html?line=worcester" data-ajax="false">
+          <h3>Framingham / Worcester Line</h3></a></li>
+      <li><a href="mselectstation.html?line=greenbush" data-ajax="false">
+          <h3>Greenbush Line</h3></a></li>
+      <li><a href="mselectstation.html?line=haverhill" data-ajax="false">
+          <h3>Haverhill / Reading Line</h3></a></li>
+      <li><a href="mselectstation.html?line=king_plym" data-ajax="false">
+          <h3>Kingston / Plymouth Line</h3></a></li>
+      <li><a href="mselectstation.html?line=lowell" data-ajax="false">
+          <h3>Lowell Line</h3></a></li>
+      <li><a href="mselectstation.html?line=middleborough" data-ajax="false">
+          <h3>Middleborough / Lakeville Line</h3></a></li>
+      <li><a href="mselectstation.html?line=needham" data-ajax="false">
+          <h3>Needham Line</h3></a></li>
+      <li><a href="mselectstation.html?line=newb_rock" data-ajax="false">
+          <h3>Newburyport / Rockport Line</h3></a></li>
+      <li><a href="mselectstation.html?line=prov_stough" data-ajax="false">
+          <h3>Providence, RI / Stoughton Line</h3></a></li>
+    </ul>
   </body>
 </html>
