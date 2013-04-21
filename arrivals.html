@@ -13,7 +13,7 @@
       Copyright (c) 2013 by Daniel Brook. All rights reserved. This page may
       be used for any purpose so long as credit to the author is given.
       
-      Page updated by Daniel Brook on 2013-03-24 at 6:00 PM
+      Page updated by Daniel Brook on 2013-04-21 at 4:20 PM
       
       Description:
       This page will serve as the interface users will see after selecting a 
@@ -41,7 +41,7 @@
     -->
 
     <title>Mass TRAC - Station Arrival Information Page</title>
-
+    
     <!--
       The main style sheet for this page is arrivals.css, but to keep a 
       consistent color scheme for the lines that use the MBTA's CSS colors,
@@ -89,266 +89,64 @@
     <script src="lib/datagetter.js" type="text/javascript"></script>
     <script src="lib/ui.js" type="text/javascript"></script>
     <script src="lib/canvops.js" type="text/javascript"></script>
-    <!--
-      When ready, start requesting the arrival data.
-    -->
-    <script>
-      function reloadData()
-      {
-        // Give visual feedback that a refresh is happening
-        $("#refreshDiv").html("Retrieving New Data");
-        
-        /*
-         * Before doing anything else, empty the masstrac.arrivals array
-         * otherwise there will be duplicate entries (which are confusing)
-         */
-        masstrac.dumpData();
-        
-        /*
-         * Request new arrival data (for the predictable lines).
-         * 
-         * This has now been wrapped in a try/catch because the backend will
-         * apparently just *not define* the variable that holds the JSON if
-         * the AJAX operations fail, causing the whole interface to freeze
-         * because the JS interpreter just up and quits part-way through.
-         */
-        try {
-          for (var service = 0; service < staObj.svcs.length; service++) {
-            /*
-             * Try and get the arrivals for the station on [each] applicable line.
-             * If an error occurs, this just stops and leaves a warning icon.
-             */
-            if (masstrac.getArrivals( staObj.name, staObj.svcs[service] ) == false) {
-              $("#refreshDiv").html(
-              "<img src='img/hard_error.png' width='42' height='42'" + 
-                " title='Data Acquisition Error, try refreshing later.'>" +
-                " Trip Data Request Error"
-              );
-              return;
-            }
-            /*
-             * Show Green Line headways if applicable.
-             */
-            if (staObj.svcs[service] == "green")
-                displayGreenLine();
-          }
-          
-        } catch (e) {
-          $("#refreshDiv").html(
-            "<img src='img/hard_error.png' width='42' height='42'" + 
-              " title='Data Acquisition Error, try refreshing later.'>" +
-              " Trip Data Request Error"
-          );
-          return;
-        }
-        
-        /*
-         * Request the arrival data to be rendered
-         */
-        displayArrivals( verbose, true, times );
-        
-        /*
-         * Now run the alert grabber. This will append to masstrac.alerts[] for
-         * each relevant (to the station AND each line servicing that station)
-         * alert. Any pertinent alerts will display the alert icon, as well as
-         * make the alerts div displayable.
-         */
-        
-        // Experiment with exception handling to solve the variable "not defined"
-        // issues that arise when a problematic feed was (or couldn't be) proc'd
-        try {
-          if (masstrac.getStationAlerts( staObj ) == false) {
-              $("#refreshDiv").html(
-              "<img src='img/hard_error.png' width='42' height='42'" + 
-                " title='Problem fetching the alerts RSS feed.'>" +
-                " Alert Feed Error"
-              );
-              return;
-          }
-        } catch ( e ) {
-          $("#refreshDiv").html(
-            "<img src='img/hard_error.png' width='42' height='42'" + 
-            " title='Problem fetching the alerts RSS feed.'>" +
-            " Alert Feed Error"
-          );
-          return;
-        }
-        
-        /*
-         * Changed to always display the alerts tab.
-         * When no alerts are present, the "Service Alerts" will still
-         * be rendered, but the containing text will just be there to
-         * say it's empty.
-         */
-        if (masstrac.alerts.length > 0) {
-          displayAlerts();
-//          $("#iconAlert").show();
-//          $("#suppContent").tabs("enable", 0);
-        } else {
-            $("#alertsArea").html("There are no alerts to display, so have a nice trip!");
-//          $("#iconAlert").hide();
-//          $("#suppContent").tabs("disable", 0);
-        }
 
-        /*
-         * Plot the trains with available lat/lon information, but first we 
-         * need the base map of the lines themselves. Additionally, erasing the
-         * previous content of the canvas will prevent any strange artifacts.
-         */
-        for (var line = 0; line < staObj.svcs.length; line++) {
-          switch (staObj.svcs[line]) {
-            case "orange":
-              canvops.clearplot("orange");
-              canvops.basemap(staObj.name, "orange");
-              canvops.plotTrips("orange");
-              break;
-            case "red":
-              canvops.clearplot("red");
-              canvops.basemap(staObj.name, "red");
-              canvops.plotTrips("red");
-              break;
-            case "blue":
-              canvops.clearplot("blue");
-              canvops.basemap(staObj.name, "blue");
-              canvops.plotTrips("blue");
-              break;
-            default:
-              break;
-          }
-        }
-
-        // Put the refresh div back with the new time
-        // Apparently constructing time stamps is a total pain, but this
-        // the most likely to work across browsers.
-        var now = new Date();
-        
-        var updTime = now.getHours();
-        if (now.getMinutes() < 10) updTime += ":" + 0 + now.getMinutes();
-        else                       updTime += ":" + now.getMinutes();
-        
-        if (now.getSeconds() < 10) updTime += ":" + 0 + now.getSeconds();
-        else                       updTime += ":" + now.getSeconds();
-        
-        if (auto_update_flag == "on") {
-          $("#refreshDiv").html( "Updated: " + updTime );
-        } else {
-          $("#refreshDiv").html(
-          "<img src='img/view-refresh.png' width='42' height='42' " + 
-            "title='Refresh the data manually'>" + " Updated: " + updTime );
-        }
-        
-      }  // End of GLOBAL NAMESPACE function reloadData()
-    </script>
     <script>
-      /*
-       * The auto-update function should be run with a true argument to
-       * enable the clock and have the page try and update automatically.
-       * To disable, just send it false.
-       * 
-       * http://www.w3schools.com/js/js_timing.asp
-       */
-      
-      // Instantiate the auto_active variable first
-      var auto_active;
-      
-      function autoUpdate( mode ) {
-        if (mode) {
-          /*
-           * Start the timer if requested, but also update the widgets to
-           * reflect that context of automatic updates (i.e. no manual refresh)
-           * 60000 = 60 seconds (1 minute)
-           */
-          auto_active = window.setInterval( reloadData , 30000 );
-          $("#refreshDiv").html("Automatic Refresh Enabled");
-          $("#autoRefToggle").html("<img src='img/auto-refresh.png'" + 
-            "width='42' height='42'>");
-          
-          // Disassociate the click handler if auto refresh is on
-          $("#refreshDiv").unbind( "click" );
-                  
-        } else {
-          window.clearInterval( auto_active );
-          $("#refreshDiv").html("<img id='refIcon' src='img/view-refresh.png'" +
-            "width='42' height='42' title='Refresh the data manually'>" + 
-            " Click to Refresh");
-          $("#autoRefToggle").html("<img src='img/auto-refresh-off.png'" + 
-            "width='42' height='42'>");
-          
-          // Assign the reload data function to the 
-          // click-handler on the refresh icon.
-          $("#refreshDiv").click( function () {
-            reloadData();
-          });
-        }
-      }  // End of GLOBAL NAMESPACE function autoUpdate( bool )
-      </script>
-      <script>
       /*
        * The ready function (from jQuery) that will load on startup.
        */
       $(document).ready( function () {
-        
-        // Get the name of the station requested and send it to the updater.
-        // (But first get rid of the %20 where there are spaces in the names).
-        // Thanks to:
-        // http://stackoverflow.com/questions/3794919/replace-all-spaces-in-a-string-with
-        
-        var stop_name = (getParameter( "name" )).split("%20").join(" ");
-      
-        // Submitting a string with a slash breaks things....
-        stop_name = stop_name.split("%2F").join("/");
-        
-        // ... as do the parentheses ( and ):
-        stop_name = stop_name.split("%28").join("(");
-        stop_name = stop_name.split("%29").join(")");
+        /*
+         * Setup all jQuery UI things before data acquisition is attempted,
+         * otherwise if bad parameters are used, the page is half baked.
+         * First, make the tabs widget.
+         */
+        $("#suppContent").tabs({"disabled": [1, 2, 3]});
         
         /*
-         * The submit function likes to generate plus signs instead of %20.
-         * So in case the above split/join missed it, here's the one with +.
+         * Then setup all the toolbar buttons and how they handle toggling.
          */
-        stop_name = stop_name.split( "+" ).join( " " );
+        $("#disclaimShow").click( function (event) {
+          $("#disclaimer").dialog({
+            width: 800,
+            title: "Understanding the Live Tracking Data"
+          });
+        });
         
-        // Store the station name in a secret place so it's retained when a
-        // user has to change a configuration and use the submit button.
-        $("#stationName").val( stop_name );
+        $("#autoRefToggle").click( function () {
+          if (options.autoRef)
+            options.autoRef = false;
+          else
+            options.autoRef = true;
+          recreateURL();
+        });
+
+        $("#verbosityToggle").click( function () {
+          if (options.verbose)
+            options.verbose = false;
+          else
+            options.verbose = true;
+          recreateURL();
+        });
+
+        $("#timesToggle").click( function () {
+          if (options.times)
+            options.times = false;
+          else
+            options.times = true;
+          recreateURL();
+        });
         
-        // Should automatic refreshing be enabled?
-        auto_update_flag = getParameter( "autoRef" );
+        $("#manualRefBtn").click( function () {
+          
+          reloadData();
+          
+        });
+
+        // What parameters were requested? Save them with the helper function.
+        ingestOptions();
         
-        // Should the verbose mode be used? (Update the settings div)
-        var verbose_mode_flag = getParameter( "verbose" );
-        
-        // Should the times be displayed as countdowns or like "12:44"
-        var countdown_mode_flag = getParameter( "times" );
-        
-        if (auto_update_flag == "on") {
-          autoUpdate( true );
-          $("#cb_autoRef").prop('checked', true);
-        } else {
-          autoUpdate( false );
-        }
-        
-        // verbose is a global flag that will be used to determine what
-        // mode (either the sorted purely by time or more concise view)
-        if (verbose_mode_flag == "on") {
-          verbose = "time";
-          $("#cb_verbose").prop('checked', true);
-        } else {
-          verbose = "dest";
-        }
-        
-        if (countdown_mode_flag == "on") {
-          times = true;
-          $("#cb_clocktime").prop('checked', true);
-        } else {
-          times = false;
-        }
-        
-        /*
-         * Find where the station is in masstrac.stations and make shortcut
-         * This will be global to make life a little easier.
-         */
-        staObj = masstrac.lookupStation( stop_name );
+        // Find where the station is in masstrac.stations and make shortcut
+        staObj = masstrac.lookupStation( options.name );
         
         if (staObj == false) {
           $("#refreshDiv").html(
@@ -359,42 +157,26 @@
           return;
         }
         
-        /*
-         * Make the header area with the station name and line selectors
-         */
+        // Make the header area with the station name and line selectors
         makeTitle( staObj );
-        
-        // The hover / click event techniques come from here:
-        // http://creativeindividual.co.uk/2011/02/create-a-pop-up-div-in-jquery/
-        // Note that there is some requisite CSS happening here, too
-        
-        // This is needed to KEEP the window hovered if the mouse goes into it
-        $("#disclaimShow").click( function (event) { $("#disclaimer").toggle(); });
-        $("#settingsShow").click( function (event) { $("#settingsPane").toggle(); });
-        $("#disclaimShow").css( 'cursor', 'pointer' );
-        $("#settingsShow").css( 'cursor', 'pointer' );
         
         // Force the resize handler to fire right at load time
         $(window).resize();
-        
-        /*
-         * Try to tab-ify the supplemental content area.
-         * Hide all the subway live plotting areas first.
-         */
-        $("#suppContent").tabs({"disabled": [1, 2, 3]});
         
         /*
          * Show the bus connections (if any)
          */
         if (staObj.bus.length > 0) {
           displayBus( staObj );
-//          $("#suppContent").tabs("enable", 4);
         } else {
-//          $("#suppContent").tabs("disable", 4);
           $("#busArea").html("There are no available MBTA bus connections at this station." +
                              " Service may be available from a local transit authority.");
         }
         
+        /*
+         * Enable the live tracker panels in the tabs widget if one of the
+         * trackable lines is actually available at the selected station.
+         */
         for (var line = 0; line < staObj.svcs.length; line++) {
           switch (staObj.svcs[line]) {
             case "orange":
@@ -413,8 +195,14 @@
         
         // When the page loads and after all jQuery is setup, get the data.
         reloadData();
+        
+        // Set the page to automatically refresh if needed
+        if (options.autoRef)
+          window.setInterval(reloadData, 30000);
       });  // End of jQuery document/ready function
+    </script>
       
+    <script>
       /*
        * The Resize Event Handler will make sure that the content still displays
        * as we intended when the user tries to make the window shorter / taller.
@@ -430,17 +218,6 @@
         $("#arrivalsArea").css({'height': newHeight + "px"
         });
         $("#suppContent").css({'height': newHeight - 3 + "px"});
-      });
-      
-      /*
-       * The submit handler will deal with reloading the page with the 
-       * appropriate URL parameters for the customizations the user decided
-       * to pick from the settings div.
-       */
-      $("#mt_settings").submit( function ()
-      {
-        $("#stationName").split( " " ).join( "%20" );
-        return true;
       });
     </script>
   </head>
@@ -474,12 +251,14 @@
       <!-- These are in their own DIV so they'll group together and
            be arranged as said group, preventing a weird "scattered" look -->
       <div>
-        <div id="autoRefToggle"></div>
-        <div id="disclaimShow">
-          <img src="img/helpabout.png" width="42" height="42">
+        <div id="manualRefBtn" class="toolbutton">
+          <img src="img/refetch.png" width="42" height="42">
         </div>
-        <div id="settingsShow">
-          <img src="img/preferences-system.png" width="42" height="42">
+        <div id="verbosityToggle" class="toolbutton"></div>
+        <div id="timesToggle" class="toolbutton"></div>
+        <div id="autoRefToggle" class="toolbutton"></div>
+        <div id="disclaimShow" class="toolbutton">
+          <img src="img/helpabout.png" width="42" height="42">
         </div>
       </div>
     </div>
@@ -508,10 +287,10 @@
       <div id="suppContent">
         <ul>
           <li><a href="#alertsArea">Service Alerts</a></li>
-          <li><a href="#liveRed">Red Line</a></li>
-          <li><a href="#liveOrange">Orange Line</a></li>
-          <li><a href="#liveBlue">Blue Line</a></li>
-          <li><a href="#busArea">Bus Connections</a></li>
+          <li><a href="#liveRed">Red Line Plot</a></li>
+          <li><a href="#liveOrange">Orange Line Plot</a></li>
+          <li><a href="#liveBlue">Blue Line Plot</a></li>
+          <li><a href="#busArea">Buses</a></li>
         </ul>
         <div id="alertsArea"></div>
         <div id="liveRed">
@@ -536,7 +315,7 @@
     <!--
       This area will hold the important disclaimer that the MBTA wants the
       developers using its data to display, as well as a brief idea as to what
-      is actually being displayed on the page.
+      is actually being displayed on the page. Put it into a jQuery UI dialog.
     -->
     <div id="disclaimer">
       <p>
@@ -582,53 +361,6 @@
       <div class="sortArrival layout countdown depart">Departing</div>
       <b>Departing / Boarding</b>: The train is currently stopped and about
       to leave the selected station.
-    </div>
-    
-    <!--
-      The last hovering-div will be for the form that will basically request
-      that the page be reloaded with new parameters specified. (See the URL
-      parameters list at the comment at the top of the page here)
-    -->
-    <div id="settingsPane">
-      <h3>Configure Mass TRAC</h3>
-      <form id="mt_settings" method="GET">
-        <table>
-          <tr>
-            <td><input type="checkbox" id="cb_autoRef" name="autoRef"></td>
-            <td>
-              Automatically refresh the data (30 sec)
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="cb_verbose" name="verbose"></td>
-            <td>
-              Display detailed trip information<br />
-              (at the cost of organization)
-            </td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" id="cb_clocktime" name="times"></td>
-            <td>
-              Show arrivals as times (like 3:44pm)
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2" style="text-align : center">
-              <input type="Submit" id="btn_submit" value="Submit">
-            </td>
-            
-            <!--
-              Included this as a way to keep the name when a submit is done
-              TODO: Fix this to work a better way, if possible. This is hacky.
-            -->
-          </tr>
-          <tr>
-            <td colspan="2" style="display : none">
-              <input type="text" id="stationName" name="name">
-            </td>
-          </tr>
-        </table>
-      </form>
     </div>
     
   </body>
