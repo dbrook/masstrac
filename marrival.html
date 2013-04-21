@@ -40,6 +40,7 @@
     <script src="lib/green.js" type="text/javascript"></script>
     <script src="lib/datagetter.js" type="text/javascript"></script>
     <script src="lib/mobileUI.js" type="text/javascript"></script>
+    <script src="lib/canvops.js" type="text/javascript"></script>
     
     <title>Mass TRAC Mobile</title>
     
@@ -105,15 +106,19 @@
         "text-shadow" : "0 0 0"
       });
       
+      // Line-specific operations (coloring header and displaying canvas)
       switch (sline) {
         case "red":
           $("#nameZone").addClass( "redLine" );
+//          $("#redPlot").show();
           break;
         case "orange":
           $("#nameZone").addClass( "orangeLine" );
+//          $("#orangePlot").show();
           break;
         case "blue":
           $("#nameZone").addClass( "blueLine" );
+//          $("#bluePlot").show();
           break;
         case "green":
           $("#nameZone").addClass( "greenLine" );
@@ -167,6 +172,15 @@
       </li>
     </ul>
     <ul id="arrivalList" data-role="listview"></ul>
+    
+    <!-- Canvas placeholders -->
+ <!--
+    <div>
+      <canvas style="display : hidden" id="redPlot" width="475" height="525"></canvas>
+      <canvas style="display : hidden" id="orangePlot" width="475" height="525"></canvas>
+      <canvas style="display : hidden" id="bluePlot" width="475" height="525"></canvas>
+    </div>
+-->
   </body>
 </html>
   

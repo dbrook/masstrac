@@ -5,7 +5,7 @@
  *              Austin Veino, UMass Lowell Student (austin_veino@student.uml.edu)
  *              Jivani Cassar, UMass Lowell Student (jivani_cassar@student.uml.edu)
  *
- * Page updated by Daniel Brook on 2013-03-24 at 6:30 PM
+ * Page updated by Daniel Brook on 2013-04-21 at 4:20 PM
  *
  * This style sheet will control the layout of widgets and other visual 
  * elements on the arrivals page. The major accomplishments will be to do:
@@ -376,22 +376,10 @@ body {
  */
 #disclaimer {
   display    : none;
-  position   : absolute;
-   
-  /*
-   * The right/top values are to make this all mesh nicely with the 
-   * heading toolbar. If that changes size, then so should these!
-   */
   font-family: Tahoma, Arial, sans-serif;
-  right      : 60px;
-  top        : 48px;
-  width      : 850px;
-  padding    : 5px 15px;
   background : #222222;
   color      : white;
-  border     : 2px solid white;
-  font-size  : 0.8em;
-  box-shadow : 5px 5px 3px gray;
+  font-size  : 0.7em;
 }
 
 #disclaimer .layout {
@@ -478,15 +466,28 @@ body {
 
 /*
  * Scale down the font size in the alerts area, as the tabs widget decides it
- * wants gigantic fonts.
+ * wants gigantic fonts. (Do the same for buses!)
  */
 #alertsArea {
   font-family : Tahoma, Arial, sans-serif;
   font-size   : .8em;
   margin      : 10px;
 }
+#busArea {
+  font-family : Tahoma, Arial, sans-serif;
+  font-size   : .9em;
+  margin      : 10px;
+}
 
 #suppContent canvas {
   border  : 1px solid black;
   margin  : 2px;
+}
+
+/*
+ * Make toolbar buttons (despite being images) look like links with a hand
+ * pointer when hovered over.
+ */
+.toolbutton {
+  cursor : pointer;
 }
