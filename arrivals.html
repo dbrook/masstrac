@@ -195,22 +195,21 @@
          * need the base map of the lines themselves. Additionally, erasing the
          * previous content of the canvas will prevent any strange artifacts.
          */
-
         for (var line = 0; line < staObj.svcs.length; line++) {
           switch (staObj.svcs[line]) {
             case "orange":
               canvops.clearplot("orange");
-              canvops.basemap("orange");
+              canvops.basemap(staObj.name, "orange");
               canvops.plotTrips("orange");
               break;
             case "red":
               canvops.clearplot("red");
-              canvops.basemap("red");
+              canvops.basemap(staObj.name, "red");
               canvops.plotTrips("red");
               break;
             case "blue":
               canvops.clearplot("blue");
-              canvops.basemap("blue");
+              canvops.basemap(staObj.name, "blue");
               canvops.plotTrips("blue");
               break;
             default:
@@ -516,17 +515,17 @@
         </ul>
         <div id="alertsArea"></div>
         <div id="liveRed">
-          <canvas id="redPlot" width="475" height="475">
+          <canvas id="redPlot" width="475" height="525">
             Sorry, you're browser doesn't support HTML5's canvas widget. 
           </canvas>
         </div>
         <div id="liveOrange">
-          <canvas id="orangePlot" width="475" height="475">
+          <canvas id="orangePlot" width="475" height="525">
             Sorry, you're browser doesn't support HTML5's canvas widget.
           </canvas>
         </div>
         <div id="liveBlue">
-          <canvas id="bluePlot" width="475" height="475">
+          <canvas id="bluePlot" width="475" height="525">
             Sorry, you're browser doesn't support HTML5's canvas widget.
           </canvas>
         </div>
