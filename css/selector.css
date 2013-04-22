@@ -40,6 +40,21 @@ body {
   float: left;
 }
 
+/*
+#menuHeader
+{
+  height: 50px;
+  background-color: ghostwhite;
+  border-style: solid;
+  border-width: 4px;
+  border-color: orangered;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font: bold 18px 'lucida sans', 'trebuchet MS', 'Tahoma';
+}
+*/
+
 /* Div for search bar */
 #searchBar
 {
