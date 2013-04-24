@@ -1,75 +1,29 @@
 Mass TRAC - Features not yet implemented
 ========================================
 
- Data Acquisition
-------------------
-  - Error handling                                                          DONE
-      + Sending failure status from PHP to AJAX and properly handling them
-      + Notify users that an error occurred via the interface
-  
-  - Streamline the alert data acquisition                                   DONE
-      + Currently it requires pegging the PHP script for EACH service, and
-        is hugely wasteful from a parsing perspective (the poor browsers!)
-      + Going to switch to a single function call that will encapsulate loops.
-  
-  - Switch from synchronous to asynchronous AJAX operations                 OMIT
+ The masstrac.* Data Acquisition API
+-------------------------------------
+  - Switch from synchronous to asynchronous AJAX operations
       + Browser locks up as calls to the PHP and retrieval of JSON data from
         the cached server copies are happening (AJAX in synchronous mode).
       + This could be tough because of how the JSON data is processed,
         perhaps we should refactor the code a little bit to use the jQuery
         $.ajaxStop() handler? (Admittedly a better understanding of AJAX 
         would better facilitate this ... an area for more research)
-      + Flagged "OMIT" because the data acquisition is so much quicker now it
-        really doesn't matter.
 
- Launch Page
--------------
-  - Slight modifications in content layout
-      + On low-res screens, the heading is extremely large. Perhaps redesign
-        page such that on low-res screens it's not as big and users can see
-        the entire page and not have this awkward scrolling accordion area
-        within the scrolling main page.
-
-  - Alerts on the main launch page?
-      + A mechanism to show the alerts on the front page would be cool, but
-        there's a significant problem of information overload and probably
-        no clear way to rectify that.
-
-  - Favorite stations
-      + Let users save stations for quick access. Note however that our URLs
-        are constructed in a totally "bookmarkable" manner.
+  - Refactor lines so that their full names can be queried.
 
  Mobile Site
 -------------
-  - Make the mobile site
-      + Any issues so far?
+  - Canvas widget will require some work to display on different sized screens
+
+  - Ideally the whole thing would use the AJAX navigation properly, so the
+    ins and outs of that would need to be learned before a solid mobile site
+    could be developed. The separated approach works now, however.
 
  Arrival Information Page
 --------------------------
-  - Settings dialog                                                         DONE
-      + A basic version is now done, but if more features are needed we'll
-        have to evaluate the available time.
+  - HTML5 Canvas loading PNG images on webkit browsers is troublesome.
+      + Still have to find out why.
 
-  - HTML5 Canvas showing currently-tracked train positions                  DONE
-      + Only does rapid transit lines, and as it turns out, only the last
-        known positions are reported with the lat, lon fields. It appears that
-        when a train passes a signal, it's location is recorded and that's why
-        the little position arrows don't ever display in places other than
-        around the station stops. Still, it's kind of neat.
-
-  - Organization of arrival data
-      + Group-by-destination is now the default, but it's a little messy, as we
-        cannot nicely group trips that have destinations other than their
-        terminals. One option would be to process these like the Commuter Rail
-        outbound trips and just list them by time.
-
-  - Automatic Data Refreshing / Updating                                    DONE
-      + Make the auto refresh button trigger the timer structure to request new
-        data from the servers without user intervention.
-      + This still needs to reworking to operate as expected.
-
-  - COOKIES. How, what, why?                                                OMIT
-      + As we're now past the feature freeze, whatever is done is done, the
-        focus is now in getting working what we have.
-
--- Dan   (updated 25-Mar-2013)
+-- Dan   (updated 23-Apr-2013)
