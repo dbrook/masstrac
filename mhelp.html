@@ -52,14 +52,14 @@
         Additionally, if you click one of the trips, you can see all the
         associated predictions with it (how long it will take to run its route)!
       </p>
-      <h3>The times in (parentheses)</h3>
+      <h3>Scheduled Times</h3>
       <p>
-        Due to the smaller screens on mobile devices, certain shortcuts were
-        taken to provide information in a clearer manner. The result of this is
-        that the distinction between a <b>predicted trip</b> (one that's already 
-        running) and a <b>scheduled trip</b> (generally one that hasn't gotten 
-        to the end of the line and turned around yet) is 
-        denoted with the countdown times in parentheses.
+        Listings with &quot;Sched.&quot; appended in front of their countdowns
+        are based on provided schedule data from the MBTA. These predictions
+        are for trains which haven't yet turned around at the end of the line
+        and made the trip in the direction listed. For example, a Forest Hills
+        train will become an Oak Grove train after it's reversed at Forest
+        Hills.
       </p>
       <h3>Known Bugs</h3>
       <p>
@@ -67,28 +67,11 @@
         across some strange (and sometimes persistent) bugs that could affect
         the usefulness of the tool. Below are the biggest ones we've found.
       </p>
-      <ul>
-        <li>
-          <b>Weekend Commuter Rail Data: </b>
-          The MBTA data feed seems to get polluted (mostly on weekends) with
-          phantom weekday trips that will obviously never come by. That's why
-          we print the Train # on Commuter Rail trips!
-        </li>
-        <li>
-          <b>Loss of Tracking Data: </b>
-          On the Commuter Rail feeds, trips will sometimes lose their tracking
-          data (which includes the real-time position and other information), 
-          which takes it from predicted mode to scheduled mode and back again.
-          This reverts the times to whatever was printed on the schedule and 
-          thus won't (necessarily) reflect reality.
-        </li>
-        <li>
-          <b>Feed Resilience: </b>
-          Things happen, sometimes the tracking data feeds disappear for a few
-          minutes here and there. If one is encountered, Mass TRAC will tell 
-          you.
-        </li>
-      </ul>
+      <p>
+        All of the bugs we encountered were with the Commuter Rail feeds, and
+        as of April 25, 2013, the MBTA completely revamped how those feeds were
+        generated. So we'll need some time to find <b>new</b> bugs!
+      </p>
     </div>
   </body>
 </html>
