@@ -107,7 +107,7 @@
          */
         $("#disclaimShow").click( function (event) {
           $("#disclaimer").dialog({
-            width: 800,
+            width: 600,
             title: "Understanding the Live Tracking Data"
           });
         });
@@ -319,46 +319,45 @@
     -->
     <div id="disclaimer">
       <p>
-        <b>Notice:</b> All data is provided by MassDOT and the Massachusetts
-        Bay Transportation Authority (MBTA). The arrival predictions are based
-        on experimental data and are offered "as-is" without any guarantee of
-        accuracy.
+        <b>Note:</b> The arrival predictions and other data displayed here are
+        all provided by MassDOT and the Massachusetts Bay Transportation 
+        Authority (MBTA). The arrival predictions are based on experimental 
+        data and are offered &quot;as-is&quot; without any guarantee of accuracy.
       </p>
       <h3>What data is displayed?</h3>
       <p>
-        Estimated arrival times appear in the left side of the window. Each one
-        is associated with a train which is heading towards the listed 
-        destination. The times listed are predictions as to how long you'll 
-        have to wait for each of these trains to arrive
-        at the station you have selected.
+        Each of the countdown times shown represent a single train's expected
+        arrival time at the station listed in the heading bar at the top. Each
+        train has a destination, indicating it's final stop. You can use the
+        buttons at the top to change a variety of features. Once you get it
+        set up the way you like, you can bookmark the page to easily get back
+        to it with those options enabled or disabled.
       </p>
       <h3>What do the colors indicate?</h3>
       <p>
-        The color scheme was designed to communicate information easily for
-        users as they become comfortable with the concept of Mass TRAC. Here's
-        what they all mean:
+        The listed trips were not all created equal, and this distinction is
+        important for users to understand so a color-coded system of a trip's
+        currant state is used to signify these differences.
       </p>
-      <div class="sortArrival layout countdown scheduled">16 min</div>
-      <b>Scheduled arrival</b>: there is no actual train associated with the listed
-      arrival time but there soon will be. This
-      is more common towards the ends of the lines, where a train is likely
-      heading towards the terminal to turn around and will soon become the
-      trip, making it change to 'predicted'.
-      <p></p>
       <div class="sortArrival layout countdown predicted">12 min</div>
-      <b>Predicted arrival</b>: there is an actual train operating associated
-      with the displayed time. The arrival time is based directly off of
-      its current position and velocity. 
+      <b>Predicted arrival</b>: The train associated with the listed time is
+      actually running its route towards the associated destination.
+      <p></p>
+      <div class="sortArrival layout countdown scheduled">16 min</div>
+      <b>Scheduled arrival</b>: The train associated with this trip isn't 
+      actually operating yet. Generally this means it hasn't turned around at
+      the end of the line yet.
       <p></p>
       <div class="sortArrival layout countdown approach">Approach</div>
       <b>Approaching</b>: The train is approaching the selected station. This is
-      typically 2 minutes before it arrives.<br /><br />
+      typically 2 minutes before it arrives.<br />
       <p></p>
       <div class="sortArrival layout countdown arrive">Arriving</div>
       <b>Arriving</b>: The train is about to arrive or is at the platform of
-      the selected station.<br /><br />
+      the selected station. This is typically under a minute before it arrives.
+      <br />
       <p></p>
-      <div class="sortArrival layout countdown depart">Departing</div>
+      <div class="sortArrival layout countdown depart">Boarding</div>
       <b>Departing / Boarding</b>: The train is currently stopped and about
       to leave the selected station.
     </div>

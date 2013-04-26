@@ -377,8 +377,8 @@ body {
 #disclaimer {
   display    : none;
   font-family: Tahoma, Arial, sans-serif;
-  background : #222222;
-  color      : white;
+  background : #bbbbbb;
+  color      : black;
   font-size  : 0.7em;
 }
 
