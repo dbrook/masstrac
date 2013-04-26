@@ -36,17 +36,20 @@
       $(document).ready(function() {
         $("#btn").click(function() {
           var input = $("#tags").val();
-          window.location = 
-            "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + input;
+          if (input != "")
+            window.location = 
+              "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + input;
         });
         $("#tags").keypress(function(event){
           if(event.which == 13){
             var input = $("#tags").val();
-            window.location = 
-              "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + input;
+            if (input != "")
+              window.location = 
+                "http://weblab.cs.uml.edu/~dbrook/masstrac/arrivals.html?name=" + input;
             return false;
           }
         });
+        $("#tags").focus();
       });
     </script>
 
