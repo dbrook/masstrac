@@ -86,6 +86,7 @@ body {
   text-align: center;
 }
 
+/* Border across the (almost) top of the page where the station name goes */
 #nameArea {
   background-color : #999999;
   padding   : 5px 12px;
@@ -101,6 +102,7 @@ body {
   font-family : Tahoma, Arial, sans-serif;
 }
 
+/* No longer used, line list orbs confused people */
 #nameArea #lineList {
   display : none;
   /*display : inline;*/
@@ -122,7 +124,9 @@ body {
 
 
 /*
- * Now do the layout for the arrival details themselves
+ * Now do the layout for the arrival details themselves.
+ * This is a somewhat massive set of rules to handle the different
+ * display modes, but both modes fall into the arrivalsArea div.
  */
 #arrivalsArea {
   /*
@@ -161,8 +165,8 @@ body {
 }
 
 /*
- * Since CSS lets us align divs in tabular form, but with a much cleaner
- * structure than pure HTML tables, we use this layout. The subsequent rules
+ * Since CSS lets us align divs in tabular form, but with a much nicer
+ * look than pure HTML tables, we use this layout. The subsequent rules
  * beneath the tableShell class are what deal with this option.
  */
 .tableShell {
@@ -281,7 +285,10 @@ body {
 
 /*
  * The organized-list arrival times (compressed view) visual configuration
- * 
+ * This is basically going to consist of a more list-based format, where
+ * we'll override <LI> to appear on the same line, and have some surrounding
+ * formatting to separate them (and color them along the lines of the
+ * color scheme defined above).
  */
 .sortArrival {
 /*  background-color : black;*/
@@ -328,7 +335,7 @@ body {
   padding     : 5px;
   width       : 65px;            /* Fits FOUR arrival orbs per line */
   border      : 2px solid black;
-  font-size   : 0.65em;
+  font-size   : 0.60em;          /* Small enough to prevent wrapping */
   text-align  : center;
   border-radius : 5px;
 }
@@ -336,7 +343,8 @@ body {
 /*
  * Specific styling associated with each "mode" an arrival can be in.
  * I tried combining these with the ones defined for the tabular-div setup,
- * but the browsers were not cascading very nicely, so this way brute-forces it.
+ * but the browsers were not cascading very nicely, so this way brute-
+ * forces it at the expense of reusability.
  */
 .sortArrival .countdown.scheduled {
   background-color : #dddddd;

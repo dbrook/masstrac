@@ -90,7 +90,7 @@
       }
       
       // Place the name of the station onto the page
-      $("#nameZone").html( staObj.name.toUpperCase() );
+      $("#nameZone").html( staObj.name.split( "/" ).join( " / " ).toUpperCase() );
       
       // Assign click handler to the reload data button
       $("#refresher").click( function () {
