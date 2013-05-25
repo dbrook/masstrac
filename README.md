@@ -7,6 +7,6 @@ University of Massachusetts Lowell. It was placed on GitHub to facilitate
 easier collaboration between the group members Dan Brook, Austin Veino, and
 Jivani Cassar. To see the site actually operating, check out:
 
-http://weblab.cs.uml.edu/~dbrook/masstrac/
+http://www.mass-trac.org/
 
 See the TODO file for features not yet completed.
